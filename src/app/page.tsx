@@ -2,20 +2,37 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef, Suspense } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import {
-  Sphere,
-  OrbitControls,
-  Stars,
-  Environment,
-  useTexture,
-  Torus,
-} from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Sphere, OrbitControls, Stars, Environment } from "@react-three/drei";
 import * as THREE from "three";
 import { Github, Mail, Rocket, ArrowLeft, ExternalLink } from "lucide-react";
 import EnhancedProceduralPlanet from "@/components/EnhancedProceduralPlanet";
 
-const projects = [
+type PlanetType = "exotic" | "terrestrial" | "gas-giant" | "moon";
+
+type Project = {
+  id: string;
+  name: string;
+  url: string;
+  description: string;
+  longDescription: string;
+  status: string;
+  planetType: PlanetType;
+  orbitRadius: number;
+  orbitSpeed: number;
+  startAngle: number;
+  size: number;
+  color: string;
+  secondaryColor: string;
+  tertiaryColor: string;
+  hasRings: boolean;
+  hasAtmosphere: boolean;
+  tech: string[];
+  stats: Record<string, string>;
+  year: string;
+};
+
+const projects: Project[] = [
   {
     id: "paradigm",
     name: "Paradigm",
@@ -24,7 +41,7 @@ const projects = [
     longDescription:
       "AI video analysis platform for sales teams. Tracks sentiment, AI chapters, AI note taking for videos and AI analyzing tools for videos in general.",
     status: "In Development",
-    planetType: "exotic",
+    planetType: "exotic" as const,
     orbitRadius: 30,
     orbitSpeed: 0.032,
     startAngle: Math.PI * 1.2,
@@ -76,7 +93,7 @@ const projects = [
     longDescription:
       "A comprehensive sports community platform that revolutionized how basketball players connect in Dubai. Built with modern React architecture and real-time WebSocket connections for instant messaging.",
     status: "Live",
-    planetType: "terrestrial",
+    planetType: "terrestrial" as const,
     orbitRadius: 12,
     orbitSpeed: 0.08,
     startAngle: 0,
@@ -116,7 +133,7 @@ const projects = [
     longDescription:
       "A sophisticated productivity application that transforms how users manage digital content. Features include intelligent text categorization and cross-device synchronization.",
     status: "Live",
-    planetType: "terrestrial",
+    planetType: "terrestrial" as const,
     orbitRadius: 24,
     orbitSpeed: 0.04,
     startAngle: Math.PI * 0.8,
@@ -152,7 +169,7 @@ const projects = [
     longDescription:
       "An advanced educational technology platform leveraging artificial intelligence to personalize learning experiences. Features include AI flashcards, similarity searches and progress trackers.",
     status: "Live",
-    planetType: "gas-giant",
+    planetType: "gas-giant" as const,
     orbitRadius: 18,
     orbitSpeed: 0.06,
     startAngle: Math.PI * 0.4,
@@ -186,7 +203,7 @@ const projects = [
     longDescription:
       "This was literally the first thing I ever made. Every morning at school, our teacher would put up games like Wordle and we'd all get stuck trying to find similar games to play. I got tired of the hunt, so one day I just decided to build a simple hub to make life easier for everyone.",
     status: "Live",
-    planetType: "moon",
+    planetType: "moon" as const,
     orbitRadius: 9,
     orbitSpeed: 0.1,
     startAngle: Math.PI * 1.6,
@@ -430,16 +447,23 @@ function Sun({ onClick }: { onClick?: () => void }) {
 }
 
 // Enhanced Planet Component with Better Materials
-function Planet({ project, onClick }: { project: any; onClick: () => void }) {
+function Planet({
+  project,
+  onClick,
+}: {
+  project: Project;
+  onClick: () => void;
+}) {
   const groupRef = useRef<THREE.Group>(null!);
-  const [time, setTime] = useState(0);
+  const [, setTime] = useState(0);
 
   useFrame((state, delta) => {
     setTime((prev) => prev + delta);
+    const currentTime = state.clock.getElapsedTime();
 
     if (groupRef.current) {
       // Orbital motion with starting angle offset
-      const angle = time * project.orbitSpeed + project.startAngle;
+      const angle = currentTime * project.orbitSpeed + project.startAngle;
       groupRef.current.position.x = Math.cos(angle) * project.orbitRadius;
       groupRef.current.position.z = Math.sin(angle) * project.orbitRadius;
     }
@@ -814,7 +838,15 @@ function StarField() {
 }
 
 // Main Solar System Scene
-function SolarSystem({ projects, onPlanetClick, onSunClick }: any) {
+function SolarSystem({
+  projects,
+  onPlanetClick,
+  onSunClick,
+}: {
+  projects: Project[];
+  onPlanetClick: (project: Project) => void;
+  onSunClick: () => void;
+}) {
   return (
     <>
       {/* Enhanced Lighting Setup */}
@@ -824,7 +856,7 @@ function SolarSystem({ projects, onPlanetClick, onSunClick }: any) {
       <Sun onClick={onSunClick} />
 
       {/* Planets */}
-      {projects.map((project: any) => (
+      {projects.map((project: Project) => (
         <Planet
           key={project.id}
           project={project}

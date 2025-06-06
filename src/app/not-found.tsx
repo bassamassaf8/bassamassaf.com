@@ -6,30 +6,35 @@ import { ArrowLeft } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-6">
-      <div className="text-center">
+    <div className="min-h-screen bg-black text-white flex items-center justify-center">
+      <motion.div
+        className="text-center max-w-md mx-auto px-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          className="text-6xl font-light mb-6 text-gray-300"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2 }}
         >
-          <h1 className="text-6xl font-bold text-gray-900 mb-4">404</h1>
-          <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-            Page Not Found
-          </h2>
-          <p className="text-gray-600 mb-8 max-w-md mx-auto">
-            The page you're looking for doesn't exist. It might have been moved,
-            deleted, or you entered the wrong URL.
-          </p>
-          <Link
-            href="/"
-            className="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors inline-flex items-center gap-2"
-          >
-            <ArrowLeft size={16} />
-            Back to Home
-          </Link>
+          404
         </motion.div>
-      </div>
+        <h1 className="text-2xl font-light mb-4">
+          You&apos;ve drifted too far from the galaxy
+        </h1>
+        <p className="text-gray-400 mb-8">
+          This celestial body doesn&apos;t exist in our solar system.
+        </p>
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+        >
+          <ArrowLeft size={16} />
+          Return to Galaxy
+        </Link>
+      </motion.div>
     </div>
   );
 }

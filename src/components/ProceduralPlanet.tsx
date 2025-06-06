@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useMemo, useState } from "react";
+import { useRef, useMemo, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -37,6 +37,36 @@ export function ProceduralPlanet({
 
   // Generate procedural geometry
   const geometry = useMemo(() => {
+    const createTerrainTexture = (
+      baseColor: THREE.Color,
+      mountainColor: THREE.Color,
+      size: number = 256
+    ) => {
+      const canvas = document.createElement("canvas");
+      canvas.width = size;
+      canvas.height = size;
+      const context = canvas.getContext("2d");
+      if (!context) return new THREE.CanvasTexture(canvas);
+
+      // Create gradient
+      const gradient = context.createLinearGradient(0, 0, 0, size);
+      gradient.addColorStop(
+        0,
+        `rgb(${mountainColor.r * 255}, ${mountainColor.g * 255}, ${
+          mountainColor.b * 255
+        })`
+      );
+      gradient.addColorStop(
+        1,
+        `rgb(${baseColor.r * 255}, ${baseColor.g * 255}, ${baseColor.b * 255})`
+      );
+
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, size, size);
+
+      return new THREE.CanvasTexture(canvas);
+    };
+
     const geometry = new THREE.SphereGeometry(radius, resolution, resolution);
     const positionAttribute = geometry.getAttribute("position");
     const vertices = positionAttribute.array as Float32Array;
