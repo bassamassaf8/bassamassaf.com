@@ -5,7 +5,15 @@ import { useState, useEffect, useRef, Suspense } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Sphere, OrbitControls, Stars, Environment } from "@react-three/drei";
 import * as THREE from "three";
-import { Github, Mail, Rocket, ArrowLeft, ExternalLink } from "lucide-react";
+import {
+  Github,
+  Mail,
+  Rocket,
+  ArrowLeft,
+  ExternalLink,
+  Info,
+  Sun as SunIcon,
+} from "lucide-react";
 import EnhancedProceduralPlanet from "@/components/EnhancedProceduralPlanet";
 
 type PlanetType = "exotic" | "terrestrial" | "gas-giant" | "moon";
@@ -884,6 +892,7 @@ export default function Home() {
     (typeof projects)[0] | null
   >(null);
   const [mounted, setMounted] = useState(false);
+  const [showNotification, setShowNotification] = useState(true);
 
   useEffect(() => {
     setMounted(true);
@@ -928,9 +937,65 @@ export default function Home() {
             transform: rotate(360deg);
           }
         }
+
+        @keyframes slideDown {
+          0% {
+            transform: translateY(-100%);
+            opacity: 0;
+          }
+          100% {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
       `}</style>
 
       <div className="min-h-screen bg-black text-white overflow-hidden relative">
+        {/* Top Notification Bar */}
+        <AnimatePresence>
+          {showNotification && (
+            <motion.div
+              className="fixed top-0 left-0 right-0 z-[110] bg-gradient-to-r from-yellow-900/80 to-orange-900/80 backdrop-blur-md border-b border-yellow-700/50"
+              initial={{ y: -100, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -100, opacity: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="flex items-center justify-between px-4 sm:px-6 py-2 max-w-7xl mx-auto">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <Info size={16} className="text-yellow-300 flex-shrink-0" />
+                  <p className="text-xs sm:text-sm text-yellow-100">
+                    <span className="hidden sm:inline">
+                      For something more serious,{" "}
+                    </span>
+                    <span className="font-medium text-yellow-200">
+                      click on the Sun ☀️
+                    </span>
+                    <span className="hidden sm:inline"> to learn about me</span>
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowNotification(false)}
+                  className="text-yellow-300 hover:text-yellow-100 transition-colors p-1"
+                  aria-label="Close notification"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Enhanced Space Background */}
         <div className="fixed inset-0">
           {/* Subtle space gradient */}
@@ -995,7 +1060,9 @@ export default function Home() {
 
         {/* Navigation */}
         <motion.nav
-          className="fixed top-0 left-0 right-0 z-[100] px-4 sm:px-8 py-4 sm:py-6 pointer-events-none"
+          className={`fixed top-0 left-0 right-0 z-[100] px-4 sm:px-8 py-4 sm:py-6 pointer-events-none transition-all duration-300 ${
+            showNotification ? "mt-10 sm:mt-12" : ""
+          }`}
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
@@ -1005,32 +1072,34 @@ export default function Home() {
           </div>
         </motion.nav>
 
-        {/* Top Social Links - Moved from bottom to avoid collisions */}
+        {/* Top Social Links - Adjusted for notification */}
         <motion.div
-          className="fixed top-4 sm:top-8 right-4 sm:right-8 z-50 pointer-events-none"
+          className={`fixed top-4 sm:top-8 right-4 sm:right-8 z-50 pointer-events-none transition-all duration-300 ${
+            showNotification ? "mt-10 sm:mt-12" : ""
+          }`}
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1 }}
         >
-          <div className="flex items-center gap-4 sm:gap-6 px-4 sm:px-8 py-3 sm:py-4 bg-black/20 backdrop-blur-xl rounded-full border border-gray-700/50 pointer-events-auto">
+          <div className="flex items-center gap-2 sm:gap-4 px-3 sm:px-6 py-2 sm:py-3 bg-black/20 backdrop-blur-xl rounded-full border border-gray-700/50 pointer-events-auto">
             <motion.a
               href="https://github.com/bassamassaf8"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 sm:p-3 rounded-full border border-gray-600/50 hover:border-gray-400 transition-all duration-300 bg-gray-900/30"
+              className="p-2 rounded-full border border-gray-600/50 hover:border-gray-400 transition-all duration-300 bg-gray-900/30"
               whileHover={{
                 scale: 1.1,
                 backgroundColor: "rgba(255,255,255,0.1)",
               }}
               whileTap={{ scale: 0.95 }}
             >
-              <Github size={16} className="sm:w-5 sm:h-5" />
+              <Github size={14} className="sm:w-4 sm:h-4" />
             </motion.a>
             <motion.a
               href="https://www.linkedin.com/in/bassam-assaf-b2611b33b/"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 sm:p-3 rounded-full border border-gray-600/50 hover:border-gray-400 transition-all duration-300 bg-gray-900/30"
+              className="p-2 rounded-full border border-gray-600/50 hover:border-gray-400 transition-all duration-300 bg-gray-900/30"
               whileHover={{
                 scale: 1.1,
                 backgroundColor: "rgba(255,255,255,0.1)",
@@ -1038,9 +1107,9 @@ export default function Home() {
               whileTap={{ scale: 0.95 }}
             >
               <svg
-                width={16}
-                height={16}
-                className="sm:w-5 sm:h-5"
+                width={14}
+                height={14}
+                className="sm:w-4 sm:h-4"
                 viewBox="0 0 24 24"
                 fill="currentColor"
               >
@@ -1049,31 +1118,49 @@ export default function Home() {
             </motion.a>
             <motion.a
               href="mailto:bassamassaf32@gmail.com"
-              className="p-2 sm:p-3 rounded-full border border-gray-600/50 hover:border-gray-400 transition-all duration-300 bg-gray-900/30"
+              className="p-2 rounded-full border border-gray-600/50 hover:border-gray-400 transition-all duration-300 bg-gray-900/30"
               whileHover={{
                 scale: 1.1,
                 backgroundColor: "rgba(255,255,255,0.1)",
               }}
               whileTap={{ scale: 0.95 }}
             >
-              <Mail size={16} className="sm:w-5 sm:h-5" />
+              <Mail size={14} className="sm:w-4 sm:h-4" />
             </motion.a>
           </div>
         </motion.div>
 
-        {/* Side Planet Info Panel - Always visible - Back to original size */}
+        {/* Side Planet Info Panel - Fully Responsive */}
         <motion.div
-          className="fixed right-4 top-1/2 transform -translate-y-1/2 z-30 w-80 pointer-events-auto"
+          className="fixed right-2 sm:right-4 top-1/2 transform -translate-y-1/2 z-30 w-72 sm:w-80 lg:w-96 pointer-events-auto hidden md:block"
           initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 1.2 }}
         >
-          <div className="bg-black/40 backdrop-blur-xl rounded-2xl border border-gray-700/50 p-6">
-            <h3 className="text-xl font-light text-white mb-4 tracking-wide">
+          <div className="bg-black/40 backdrop-blur-xl rounded-2xl border border-gray-700/50 p-4 sm:p-6 max-h-[70vh] overflow-y-auto">
+            <h3 className="text-lg sm:text-xl font-light text-white mb-4 tracking-wide">
               Exploration Guide
             </h3>
 
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
+              {/* Add Sun/About Me as first item */}
+              <motion.div
+                className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-yellow-900/40 to-orange-900/40 border border-yellow-600/30 hover:border-yellow-500/50 transition-colors cursor-pointer"
+                whileHover={{ scale: 1.02 }}
+                onClick={handleSunClick}
+              >
+                <div className="w-4 h-4 rounded-full flex-shrink-0 bg-gradient-to-r from-yellow-400 to-orange-500 shadow-lg" />
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm font-medium text-white truncate flex items-center gap-2">
+                    <SunIcon size={14} />
+                    About Me
+                  </div>
+                  <div className="text-xs text-yellow-200/80 truncate">
+                    Learn more about my background
+                  </div>
+                </div>
+              </motion.div>
+
               {projects.map((project, index) => (
                 <motion.div
                   key={project.id}
@@ -1097,10 +1184,100 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="mt-6 pt-4 border-t border-gray-700/50">
+            <div className="mt-4 sm:mt-6 pt-4 border-t border-gray-700/50">
               <p className="text-xs text-gray-400 text-center">
-                Click any planet above or in the solar system to explore details
+                Click any item above to explore details
               </p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Mobile Bottom Sheet Navigation */}
+        <motion.div
+          className="fixed bottom-0 left-0 right-0 z-40 md:hidden pointer-events-auto"
+          initial={{ opacity: 0, y: 100 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.2 }}
+        >
+          <div className="bg-black/90 backdrop-blur-xl border-t border-gray-700/50 p-4">
+            <div className="max-w-sm mx-auto">
+              <h3 className="text-lg font-light text-white mb-4 text-center tracking-wide">
+                Explore Projects
+              </h3>
+
+              {/* Mobile grid layout */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                {/* Sun/About Me */}
+                <motion.div
+                  className="flex flex-col items-center gap-2 p-3 rounded-xl bg-gradient-to-br from-yellow-900/40 to-orange-900/40 border border-yellow-600/30 active:scale-95 transition-transform cursor-pointer"
+                  onClick={handleSunClick}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 shadow-lg flex items-center justify-center">
+                    <SunIcon size={12} className="text-black" />
+                  </div>
+                  <div className="text-center">
+                    <div className="text-sm font-medium text-white">About</div>
+                    <div className="text-xs text-yellow-200/80">Learn more</div>
+                  </div>
+                </motion.div>
+
+                {/* Projects - First 3 visible, rest in "More" */}
+                {projects.slice(0, 3).map((project) => (
+                  <motion.div
+                    key={project.id}
+                    className="flex flex-col items-center gap-2 p-3 rounded-xl bg-gray-800/40 border border-gray-600/30 active:scale-95 transition-transform cursor-pointer"
+                    onClick={() => handlePlanetClick(project)}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <div
+                      className="w-6 h-6 rounded-full shadow-lg"
+                      style={{ backgroundColor: project.color }}
+                    />
+                    <div className="text-center">
+                      <div className="text-sm font-medium text-white truncate max-w-[80px]">
+                        {project.name}
+                      </div>
+                      <div className="text-xs text-gray-400 truncate max-w-[80px]">
+                        {project.status}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Show remaining projects */}
+              {projects.length > 3 && (
+                <div className="grid grid-cols-2 gap-3">
+                  {projects.slice(3).map((project) => (
+                    <motion.div
+                      key={project.id}
+                      className="flex flex-col items-center gap-2 p-3 rounded-xl bg-gray-800/40 border border-gray-600/30 active:scale-95 transition-transform cursor-pointer"
+                      onClick={() => handlePlanetClick(project)}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <div
+                        className="w-6 h-6 rounded-full shadow-lg"
+                        style={{ backgroundColor: project.color }}
+                      />
+                      <div className="text-center">
+                        <div className="text-sm font-medium text-white truncate max-w-[80px]">
+                          {project.name}
+                        </div>
+                        <div className="text-xs text-gray-400 truncate max-w-[80px]">
+                          {project.status}
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+
+              <div className="mt-4 pt-3 border-t border-gray-700/50">
+                <p className="text-xs text-gray-400 text-center">
+                  Tap any item to explore details
+                </p>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -1111,38 +1288,43 @@ export default function Home() {
             // Solar System View
             <motion.div
               key="solar-system"
-              className="relative min-h-screen pt-16 sm:pt-24 px-4 sm:px-8 pointer-events-none"
+              className={`relative min-h-screen pt-16 sm:pt-24 px-4 sm:px-8 pointer-events-none transition-all duration-300 pb-0 md:pb-0 ${
+                showNotification ? "mt-10 sm:mt-12" : ""
+              }`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <div className="relative h-[80vh] max-w-6xl mx-auto flex items-center justify-center">
-                {/* Enhanced Instructions */}
+              <div className="relative h-[80vh] md:h-[80vh] max-w-6xl mx-auto flex items-center justify-center pb-32 md:pb-0">
+                {/* Enhanced Instructions - Mobile Responsive */}
                 <motion.div
-                  className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-center text-gray-400 text-sm z-20 pointer-events-auto"
+                  className="absolute bottom-4 md:bottom-4 left-1/2 transform -translate-x-1/2 text-center text-gray-400 text-xs sm:text-sm z-20 pointer-events-auto px-4 max-w-full mb-20 md:mb-0"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 2 }}
                 >
-                  <div className="bg-black/60 backdrop-blur-md px-6 py-3 rounded-lg border border-gray-600/50">
-                    <p className="mb-1 text-white">
+                  <div className="bg-black/60 backdrop-blur-md px-4 sm:px-6 py-3 rounded-lg border border-gray-600/50 max-w-2xl mx-auto">
+                    <p className="mb-1 text-white text-xs sm:text-sm">
                       ✨ <strong>Hover planets</strong> to see them glow • 🖱️{" "}
-                      <strong>Click colored planets</strong> for project details
+                      <strong>Click planets</strong> for details
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-gray-400 hidden sm:block">
                       🖱️ Drag to rotate • 🔍 Scroll to zoom • Auto-rotation
                       enabled
+                    </p>
+                    <p className="text-xs text-gray-400 sm:hidden">
+                      Touch to rotate • Pinch to zoom • Use bottom menu
                     </p>
                   </div>
                 </motion.div>
               </div>
             </motion.div>
           ) : (
-            // Enhanced Planet Detail View - Made smaller with gray background and animated gradient border
+            // Enhanced Planet Detail View - Fully Responsive
             <motion.div
               key="planet-detail"
-              className="fixed left-0 top-0 bottom-0 w-1/3 z-40 overflow-y-auto"
+              className="fixed left-0 top-0 bottom-0 w-full sm:w-2/3 md:w-1/2 lg:w-1/3 z-40 overflow-y-auto"
               initial={{ x: "-100%", opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: "-100%", opacity: 0 }}
@@ -1164,23 +1346,23 @@ export default function Home() {
                 {/* Inner border for clean edges */}
                 <div className="absolute inset-1 bg-gray-900 rounded-lg"></div>
 
-                <div className="relative z-10 p-4 h-full flex flex-col text-gray-100">
-                  {/* Enhanced Header - Reduced spacing */}
+                <div className="relative z-10 p-4 sm:p-6 h-full flex flex-col text-gray-100">
+                  {/* Enhanced Header - Responsive */}
                   <div className="mb-4">
                     <div className="flex items-center gap-3 mb-3">
                       <div
-                        className="w-10 h-10 rounded-full flex-shrink-0 shadow-lg border-2"
+                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex-shrink-0 shadow-lg border-2"
                         style={{
                           backgroundColor: selectedPlanet.color,
                           borderColor: selectedPlanet.secondaryColor,
                           boxShadow: `0 0 15px ${selectedPlanet.color}40`,
                         }}
                       />
-                      <div className="flex-1">
-                        <h1 className="text-2xl font-thin text-white tracking-wide mb-1">
+                      <div className="flex-1 min-w-0">
+                        <h1 className="text-xl sm:text-2xl font-thin text-white tracking-wide mb-1">
                           {selectedPlanet.name}
                         </h1>
-                        <div className="flex items-center gap-3 text-xs text-gray-300 mb-2">
+                        <div className="flex items-center gap-2 sm:gap-3 text-xs text-gray-300 mb-2">
                           {selectedPlanet.name === "ExamVault" ? (
                             <span className="text-blue-300 font-medium">
                               Co-founder
@@ -1218,9 +1400,9 @@ export default function Home() {
                     </p>
                   </div>
 
-                  {/* Technology Stack - Reduced size */}
+                  {/* Technology Stack - Responsive Grid */}
                   <div className="mb-4">
-                    <div className="grid grid-cols-3 gap-1">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-1">
                       {selectedPlanet.tech.map((tech, i) => (
                         <motion.div
                           key={i}
@@ -1240,11 +1422,11 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Return to System Button - Positioned over action area */}
-                  <div className="mt-auto">
+                  {/* Action Buttons - Responsive */}
+                  <div className="mt-auto space-y-2">
                     <motion.button
                       onClick={handleBack}
-                      className="flex items-center justify-center gap-2 w-full py-2 mb-2 rounded-xl font-medium text-gray-300 hover:text-white transition-colors bg-gray-800 hover:bg-gray-700 border border-gray-600 text-sm"
+                      className="flex items-center justify-center gap-2 w-full py-2 sm:py-3 rounded-xl font-medium text-gray-300 hover:text-white transition-colors bg-gray-800 hover:bg-gray-700 border border-gray-600 text-sm"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
@@ -1257,7 +1439,7 @@ export default function Home() {
                         href={selectedPlanet.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 w-full py-2 rounded-xl font-medium text-white shadow-2xl text-sm relative overflow-hidden group"
+                        className="flex items-center justify-center gap-2 w-full py-2 sm:py-3 rounded-xl font-medium text-white shadow-2xl text-sm relative overflow-hidden group"
                         style={{
                           background: `linear-gradient(135deg, ${selectedPlanet.color}, ${selectedPlanet.secondaryColor})`,
                         }}
