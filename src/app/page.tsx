@@ -231,7 +231,7 @@ export default function Home() {
           >
             <div className="w-64 h-64 mx-auto bg-gradient-to-br from-[#B3B8FF]/20 to-[#B3B8FF]/5 rounded-2xl flex items-center justify-center overflow-hidden">
               <img
-                src="/fortesimage.png"
+                src="/bassam-new-photo.png"
                 alt="Bassam Assaf"
                 className="w-full h-full object-cover rounded-2xl"
               />
