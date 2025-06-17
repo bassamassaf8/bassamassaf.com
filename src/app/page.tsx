@@ -229,8 +229,12 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ delay: 0.4 }}
           >
-            <div className="w-64 h-64 mx-auto bg-gradient-to-br from-[#B3B8FF]/20 to-[#B3B8FF]/5 rounded-2xl flex items-center justify-center">
-              <div className="text-gray-400 text-lg">Photo Coming Soon</div>
+            <div className="w-64 h-64 mx-auto bg-gradient-to-br from-[#B3B8FF]/20 to-[#B3B8FF]/5 rounded-2xl flex items-center justify-center overflow-hidden">
+              <img
+                src="/fortesimage.png"
+                alt="Bassam Assaf"
+                className="w-full h-full object-cover rounded-2xl"
+              />
             </div>
           </motion.div>
         </motion.div>
