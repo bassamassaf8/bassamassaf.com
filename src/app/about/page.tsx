@@ -231,7 +231,7 @@ export default function AboutPage() {
         >
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
             <h2 className="text-lg font-medium text-white mb-6 flex items-center gap-2">
-              ⚡ current focus
+              ⚡ current focu
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
