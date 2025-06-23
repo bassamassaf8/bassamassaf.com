@@ -860,7 +860,14 @@ function SolarSystem({
       <ambientLight intensity={0.15} color="#ffffff" />
 
       {/* Central Sun */}
-      <Sun />
+      <Sun
+        onClick={() =>
+          window.open(
+            "https://www.linkedin.com/in/bassam-assaf-b2611b33b/",
+            "_blank"
+          )
+        }
+      />
 
       {/* Planets */}
       {projects.map((project: Project) => (
@@ -941,6 +948,14 @@ export default function ProjectsPage() {
               className="hover:text-white transition"
             >
               GitHub
+            </a>
+            <a
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition"
+            >
+              Resumé
             </a>
           </div>
         </div>

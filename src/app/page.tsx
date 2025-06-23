@@ -84,33 +84,40 @@ export default function Home() {
       </div>
 
       {/* Top navigation */}
-      <nav className="absolute top-0 right-0 p-6 z-20 flex gap-6 text-gray-400 text-sm">
-        <Link href="/blog" className="hover:text-white transition">
+      <nav className="fixed top-0 right-0 p-6 z-20 flex gap-6 text-gray-400 text-sm backdrop-blur-md bg-black/20 rounded-bl-lg">
+        <Link
+          href="/blog"
+          className="relative hover:text-white transition-colors group"
+        >
           Blog
+          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#B3B8FF] transition-all duration-300 group-hover:w-full"></span>
         </Link>
         <a
           href="https://www.linkedin.com/in/bassam-assaf-b2611b33b/"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-white transition"
+          className="relative hover:text-white transition-colors group"
         >
           LinkedIn
+          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#B3B8FF] transition-all duration-300 group-hover:w-full"></span>
         </a>
         <a
           href="https://github.com/bassamassaf8"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-white transition"
+          className="relative hover:text-white transition-colors group"
         >
           GitHub
+          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#B3B8FF] transition-all duration-300 group-hover:w-full"></span>
         </a>
         <a
           href="/resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-white transition"
+          className="relative hover:text-white transition-colors group"
         >
           Resumé
+          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#B3B8FF] transition-all duration-300 group-hover:w-full"></span>
         </a>
       </nav>
 
@@ -213,12 +220,12 @@ export default function Home() {
                 <span>Dubai, UAE</span>
               </div>
               <div className="flex items-center gap-2">
-                <Code2 size={16} className="text-[#B3B8FF]" />
-                <span>Jiu-Jitsu White Belt</span>
+                <Trophy size={16} className="text-[#B3B8FF]" />
+                <span>Grappler</span>
               </div>
               <div className="flex items-center gap-2">
-                <Users size={16} className="text-[#B3B8FF]" />
-                <span>Certified Hooper</span>
+                <Award size={16} className="text-[#B3B8FF]" />
+                <span>Slasher</span>
               </div>
             </motion.div>
           </div>
@@ -362,27 +369,35 @@ export default function Home() {
               description: "AI video analysis platform",
               tech: ["Next.js", "OpenAI", "FastAPI"],
               status: "In Development",
+              url: "#",
             },
             {
               name: "ExamVault",
               description: "AI-powered study platform",
               tech: ["Next.js", "Supabase", "OpenAI"],
               status: "Live",
+              url: "https://examvault.app",
             },
             {
               name: "DXB Hoops",
               description: "Basketball community platform",
               tech: ["Next.js", "Prisma", "Vercel"],
               status: "Live • 100+ athletes",
+              url: "https://dxbhoops.com",
             },
           ].map((project, index) => (
             <motion.div
               key={index}
-              className="bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-all duration-300"
+              className="bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-all duration-300 cursor-pointer"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 + index * 0.1 }}
+              onClick={() => {
+                if (project.url !== "#") {
+                  window.open(project.url, "_blank");
+                }
+              }}
             >
               <h3 className="text-xl font-semibold text-white mb-2">
                 {project.name}
