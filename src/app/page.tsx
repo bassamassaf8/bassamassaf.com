@@ -84,7 +84,7 @@ export default function Home() {
       </div>
 
       {/* Top navigation */}
-      <nav className="fixed top-0 right-0 p-6 z-20 flex gap-6 text-gray-400 text-sm backdrop-blur-md bg-black/20 rounded-bl-lg">
+      <nav className="fixed top-0 right-0 p-6 z-20 flex gap-6 text-gray-400 text-sm bg-black/30 backdrop-blur-sm rounded-bl-xl border border-white/10">
         <Link
           href="/blog"
           className="relative hover:text-white transition-colors group"
@@ -220,11 +220,49 @@ export default function Home() {
                 <span>Dubai, UAE</span>
               </div>
               <div className="flex items-center gap-2">
-                <Trophy size={16} className="text-[#B3B8FF]" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-[#B3B8FF]"
+                >
+                  {/* Gi top */}
+                  <path d="M8 4h8v2l-2 2v12h-4V8l-2-2V4z" />
+                  {/* Belt */}
+                  <path d="M6 12h12" />
+                  <path d="M6 13h12" />
+                  {/* Lapels */}
+                  <path d="M10 6l2-2 2 2" />
+                </svg>
                 <span>Grappler</span>
               </div>
               <div className="flex items-center gap-2">
-                <Award size={16} className="text-[#B3B8FF]" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="text-[#B3B8FF]"
+                >
+                  {/* Basketball circle */}
+                  <circle cx="12" cy="12" r="9" />
+                  {/* Basketball lines */}
+                  <path d="M3 12h18" />
+                  <path d="M12 3v18" />
+                  <path d="M12 3c-2.5 4-2.5 14 0 18" />
+                  <path d="M12 3c2.5 4 2.5 14 0 18" />
+                </svg>
                 <span>Slasher</span>
               </div>
             </motion.div>
@@ -258,13 +296,7 @@ export default function Home() {
         >
           Skills & Tech Stack
         </motion.h2>
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-        >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <motion.div
             className="bg-white/5 rounded-xl p-6"
             initial={{ opacity: 0, y: 20 }}
@@ -342,7 +374,7 @@ export default function Home() {
               )}
             </div>
           </motion.div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Featured Projects Preview */}
@@ -356,13 +388,8 @@ export default function Home() {
         >
           Featured Projects
         </motion.h2>
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-        >
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {[
             {
               name: "Paradigm",
@@ -387,12 +414,16 @@ export default function Home() {
             },
           ].map((project, index) => (
             <motion.div
-              key={index}
+              key={`featured-${project.name}`}
               className="bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-all duration-300 cursor-pointer"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.1 + index * 0.1 }}
+              transition={{
+                duration: 0.6,
+                delay: index * 0.2,
+                ease: "easeOut",
+              }}
               onClick={() => {
                 if (project.url !== "#") {
                   window.open(project.url, "_blank");
@@ -416,13 +447,14 @@ export default function Home() {
               <p className="text-sm text-gray-400">{project.status}</p>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
+
         <motion.div
           className="text-center"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
+          transition={{ delay: 0.8 }}
         >
           <Link
             href="/projects"

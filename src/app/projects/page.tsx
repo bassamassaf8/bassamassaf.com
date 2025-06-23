@@ -930,32 +930,39 @@ export default function ProjectsPage() {
             <span className="text-sm">Guide</span>
           </button>
           <div className="flex gap-6 text-gray-400 text-sm">
-            <Link href="/blog" className="hover:text-white transition">
+            <Link
+              href="/blog"
+              className="relative hover:text-white transition-colors group"
+            >
               Blog
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#B3B8FF] transition-all duration-300 group-hover:w-full"></span>
             </Link>
             <a
               href="https://www.linkedin.com/in/bassam-assaf-b2611b33b/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-white transition"
+              className="relative hover:text-white transition-colors group"
             >
               LinkedIn
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#B3B8FF] transition-all duration-300 group-hover:w-full"></span>
             </a>
             <a
               href="https://github.com/bassamassaf8"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-white transition"
+              className="relative hover:text-white transition-colors group"
             >
               GitHub
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#B3B8FF] transition-all duration-300 group-hover:w-full"></span>
             </a>
             <a
               href="/resume.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-white transition"
+              className="relative hover:text-white transition-colors group"
             >
               Resumé
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#B3B8FF] transition-all duration-300 group-hover:w-full"></span>
             </a>
           </div>
         </div>
