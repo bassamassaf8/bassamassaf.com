@@ -1,338 +1,256 @@
-"use client";
-
-import { motion, useScroll } from "framer-motion";
-import { useRef } from "react";
-import {
-  Github,
-  Mail,
-  ExternalLink,
-  Download,
-  Linkedin,
-  MapPin,
-  Calendar,
-  Award,
-  Users,
-  Code2,
-  Database,
-  Wrench,
-  BookOpen,
-  Trophy,
-} from "lucide-react";
-import Link from "next/link";
+import { Github, Mail, ExternalLink, Linkedin } from "lucide-react";
 
 export default function Home() {
-  const { scrollYProgress } = useScroll();
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Hardcoded star positions for SSR safety
-  const starPositions = [
-    { left: 10, top: 20, size: 48, blur: 12, opacity: 0.25 },
-    { left: 30, top: 60, size: 40, blur: 16, opacity: 0.18 },
-    { left: 70, top: 15, size: 56, blur: 18, opacity: 0.22 },
-    { left: 80, top: 50, size: 36, blur: 10, opacity: 0.2 },
-    { left: 55, top: 80, size: 44, blur: 14, opacity: 0.19 },
-    { left: 20, top: 75, size: 38, blur: 12, opacity: 0.21 },
-    { left: 60, top: 35, size: 52, blur: 20, opacity: 0.23 },
-    { left: 85, top: 25, size: 34, blur: 10, opacity: 0.17 },
-    { left: 40, top: 10, size: 50, blur: 16, opacity: 0.24 },
-    { left: 15, top: 50, size: 42, blur: 13, opacity: 0.2 },
-  ];
-
   return (
-    <div
-      className="min-h-screen bg-black text-white relative overflow-hidden"
-      ref={containerRef}
-    >
-      {/* Animated starry background */}
-      <div className="fixed inset-0 pointer-events-none">
+    <div className="min-h-screen bg-gradient-to-b from-[#000811] via-[#000408] to-[#000000] text-white relative overflow-hidden">
+      {/* Geometric blueprint background */}
+      <div className="fixed inset-0 opacity-25">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#001a33] via-transparent to-[#000d1a]" />
+        <div className="absolute inset-0 bg-gradient-to-tl from-[#002244] via-transparent to-[#001122]" />
+
+        {/* Geometric grid pattern - more visible */}
         <div
           className="absolute inset-0"
           style={{
-            background: `
-              radial-gradient(ellipse 120% 80% at 30% 70%, rgba(15, 15, 45, 0.3) 0%, transparent 70%),
-              radial-gradient(ellipse 100% 60% at 70% 30%, rgba(25, 25, 80, 0.2) 0%, transparent 60%),
-              linear-gradient(180deg, #000000 0%, #0a0a1a 50%, #000000 100%)
+            backgroundImage: `
+              linear-gradient(rgba(102, 179, 255, 0.2) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(102, 179, 255, 0.2) 1px, transparent 1px)
             `,
+            backgroundSize: "40px 40px",
           }}
         />
-        {/* SSR-safe, glowy floating stars */}
-        {starPositions.map((pos, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              left: `${pos.left}%`,
-              top: `${pos.top}%`,
-              width: pos.size,
-              height: pos.size,
-              opacity: pos.opacity,
-              background:
-                "radial-gradient(circle, #fff 0%, #b3b8ff 60%, transparent 100%)",
-              filter: `blur(${pos.blur}px)`,
-            }}
-            animate={{
-              opacity: [pos.opacity, pos.opacity + 0.2, pos.opacity],
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: 4 + (i % 3),
-              repeat: Infinity,
-              delay: (i % 10) * 0.3,
-            }}
-          />
-        ))}
+
+        {/* Blueprint-style lines - more visible */}
+        <div className="absolute top-32 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#66b3ff] to-transparent opacity-40" />
+        <div className="absolute bottom-40 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#66b3ff] to-transparent opacity-35" />
+        <div className="absolute top-0 left-32 w-px h-full bg-gradient-to-b from-transparent via-[#66b3ff] to-transparent opacity-40" />
+        <div className="absolute top-0 right-40 w-px h-full bg-gradient-to-b from-transparent via-[#66b3ff] to-transparent opacity-35" />
       </div>
 
-      {/* Top navigation */}
-      <nav className="fixed top-0 right-0 p-6 z-20 flex gap-6 text-gray-400 text-sm bg-black/30 backdrop-blur-sm rounded-bl-xl border border-white/10">
-        <Link
-          href="/blog"
-          className="relative hover:text-white transition-colors group"
-        >
-          Blog
-          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#B3B8FF] transition-all duration-300 group-hover:w-full"></span>
-        </Link>
-        <a
-          href="https://www.linkedin.com/in/bassam-assaf-b2611b33b/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="relative hover:text-white transition-colors group"
-        >
-          LinkedIn
-          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#B3B8FF] transition-all duration-300 group-hover:w-full"></span>
-        </a>
-        <a
-          href="https://github.com/bassamassaf8"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="relative hover:text-white transition-colors group"
-        >
-          GitHub
-          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#B3B8FF] transition-all duration-300 group-hover:w-full"></span>
-        </a>
-        <a
-          href="/resume.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="relative hover:text-white transition-colors group"
-        >
-          Resumé
-          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#B3B8FF] transition-all duration-300 group-hover:w-full"></span>
-        </a>
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 p-4 sm:p-6 z-20 bg-gradient-to-b from-[#000811]/80 to-transparent backdrop-blur-sm">
+        <div className="max-w-4xl mx-auto flex justify-between items-center">
+          <div className="text-sm sm:text-base font-medium text-[#e6f3ff]">
+            bassam assaf
+          </div>
+          <div className="flex gap-4 sm:gap-6 text-xs sm:text-sm text-[#b3d9ff]">
+            <a
+              href="#projects"
+              className="hover:text-[#e6f3ff] transition-colors"
+            >
+              projects
+            </a>
+            <a href="#about" className="hover:text-[#e6f3ff] transition-colors">
+              about
+            </a>
+            <a
+              href="#contact"
+              className="hover:text-[#e6f3ff] transition-colors"
+            >
+              contact
+            </a>
+          </div>
+        </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="min-h-screen flex flex-col items-center justify-center text-center px-4 relative z-10">
-        <motion.p
-          className="uppercase tracking-widest text-xs text-gray-500 mb-6"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-        >
-          Developer, Entrepreneur, Student
-        </motion.p>
-        <motion.h1
-          className="text-5xl sm:text-7xl font-light text-[#B3B8FF] mb-6"
-          style={{ letterSpacing: "-0.03em" }}
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-        >
-          Hey, I&apos;m Bassam
-        </motion.h1>
-        <motion.p
-          className="text-lg sm:text-2xl text-gray-400 mb-8 max-w-2xl mx-auto"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-        >
-          Building impactful AI-powered web applications with modern
-          technologies
-        </motion.p>
-        <motion.div
-          className="flex gap-4"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-        >
-          <Link
-            href="/projects"
-            className="px-6 py-3 bg-[#B3B8FF] text-black rounded-full hover:bg-[#9ca3ff] transition-all duration-300 font-medium"
-          >
-            View My Work
-          </Link>
-          <a
-            href="#contact"
-            className="px-6 py-3 border border-[#B3B8FF]/30 text-[#B3B8FF] rounded-full hover:bg-[#B3B8FF]/10 transition-all duration-300"
-          >
-            Get In Touch
-          </a>
-        </motion.div>
-      </section>
-
-      {/* About Me Section */}
-      <section
-        className="max-w-4xl mx-auto px-4 py-24 relative z-10"
-        id="about"
-      >
-        <motion.div
-          className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-        >
-          <div>
-            <motion.h2
-              className="text-3xl font-semibold text-[#B3B8FF] mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
+      <section className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-20 relative z-10">
+        <div className="max-w-2xl mx-auto text-center">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-light mb-8 tracking-wide text-[#ffffff]">
+            bassam assaf
+          </h1>
+          <p className="text-lg sm:text-xl text-[#e6f3ff] mb-10 max-w-md mx-auto leading-relaxed">
+            developer • entrepreneur • student
+          </p>
+          <div className="flex items-center justify-center gap-6 sm:gap-8 text-sm sm:text-base text-[#b3d9ff]">
+            <a
+              href="https://github.com/bassamassaf8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 hover:text-[#e6f3ff] transition-colors"
             >
-              About Me
-            </motion.h2>
-            <motion.p
-              className="text-gray-300 text-lg mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
+              <Github size={12} />
+              github
+            </a>
+            <a
+              href="mailto:bassamassaf32@gmail.com"
+              className="flex items-center gap-2 hover:text-[#e6f3ff] transition-colors"
             >
-              I&apos;m a passionate self-taught developer and entrepreneur from
-              Dubai who fell in love with coding through solving everyday
-              problems. I specialize in creating web applications with a focus
-              on AI integration, user experience, and scalable architectures.
-            </motion.p>
-            <motion.div
-              className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
+              <Mail size={12} />
+              email
+            </a>
+            <a
+              href="https://www.linkedin.com/in/bassamassaf123/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 hover:text-[#e6f3ff] transition-colors"
             >
-              <div className="flex items-center gap-2">
-                <MapPin size={16} className="text-[#B3B8FF]" />
-                <span>Dubai, UAE</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-[#B3B8FF]"
-                >
-                  {/* Gi top */}
-                  <path d="M8 4h8v2l-2 2v12h-4V8l-2-2V4z" />
-                  {/* Belt */}
-                  <path d="M6 12h12" />
-                  <path d="M6 13h12" />
-                  {/* Lapels */}
-                  <path d="M10 6l2-2 2 2" />
-                </svg>
-                <span>Grappler</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-[#B3B8FF]"
-                >
-                  {/* Basketball circle */}
-                  <circle cx="12" cy="12" r="9" />
-                  {/* Basketball lines */}
-                  <path d="M3 12h18" />
-                  <path d="M12 3v18" />
-                  <path d="M12 3c-2.5 4-2.5 14 0 18" />
-                  <path d="M12 3c2.5 4 2.5 14 0 18" />
-                </svg>
-                <span>Slasher</span>
-              </div>
-            </motion.div>
+              <Linkedin size={12} />
+              linkedin
+            </a>
           </div>
-          <motion.div
-            className="relative"
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
-          >
-            <div className="w-64 h-64 mx-auto bg-gradient-to-br from-[#B3B8FF]/20 to-[#B3B8FF]/5 rounded-2xl flex items-center justify-center overflow-hidden">
-              <img
-                src="/bassam-new-photo.png"
-                alt="Bassam Assaf"
-                className="w-full h-full object-cover rounded-2xl"
-              />
-            </div>
-          </motion.div>
-        </motion.div>
+        </div>
       </section>
 
-      {/* Skills & Tech Stack */}
-      <section className="max-w-6xl mx-auto px-4 py-24 relative z-10">
-        <motion.h2
-          className="text-3xl font-semibold text-[#B3B8FF] mb-12 text-center"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-        >
-          Skills & Tech Stack
-        </motion.h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <motion.div
-            className="bg-white/5 rounded-xl p-6"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <Code2 size={20} className="text-[#B3B8FF]" />
-              <h3 className="text-xl font-semibold">Languages</h3>
+      {/* Projects Section */}
+      <section
+        className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20 relative z-10"
+        id="projects"
+      >
+        <h2 className="text-lg sm:text-xl font-medium mb-8 sm:mb-12 text-[#ffffff]">
+          projects
+        </h2>
+
+        <div className="space-y-8 sm:space-y-10">
+          <div className="group">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
+              <h3 className="text-xl sm:text-2xl font-medium text-[#ffffff] mb-2">
+                examvault
+              </h3>
+              <a
+                href="https://examvault.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm sm:text-base text-[#b3d9ff] hover:text-[#e6f3ff] transition-colors self-start sm:self-auto"
+              >
+                live
+              </a>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <p className="text-sm sm:text-base text-[#e6f3ff] mb-3">
+              co-founder, CGO & developer
+            </p>
+            <p className="text-sm sm:text-base text-[#b3d9ff] leading-relaxed">
+              ai-powered revision assistant for ib students. learn where you're
+              weak, get tailored questions, practice smart.
+            </p>
+          </div>
+
+          <div className="group">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
+              <h3 className="text-xl sm:text-2xl font-medium text-[#ffffff] mb-2">
+                dxb hoops
+              </h3>
+              <a
+                href="https://dxbhoops.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm sm:text-base text-[#b3d9ff] hover:text-[#e6f3ff] transition-colors self-start sm:self-auto"
+              >
+                live
+              </a>
+            </div>
+            <p className="text-sm sm:text-base text-[#e6f3ff] mb-3">
+              founder & developer
+            </p>
+            <p className="text-sm sm:text-base text-[#b3d9ff] leading-relaxed">
+              basketball community platform connecting athletes in dubai.
+              features player profiles, game scheduling, and community events.
+            </p>
+          </div>
+
+          <div className="group">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
+              <h3 className="text-xl sm:text-2xl font-medium text-[#ffffff] mb-2">
+                domaindle
+              </h3>
+              <a
+                href="https://domaindle.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm sm:text-base text-[#b3d9ff] hover:text-[#e6f3ff] transition-colors self-start sm:self-auto"
+              >
+                live
+              </a>
+            </div>
+            <p className="text-sm sm:text-base text-[#e6f3ff] mb-3">
+              word game hub
+            </p>
+            <p className="text-sm sm:text-base text-[#b3d9ff] leading-relaxed">
+              this was literally the first thing i ever made. every morning at
+              school, our teacher would put up games like wordle and we'd all
+              get stuck trying to find similar games to play. i got tired of the
+              hunt, so one day i just decided to build a simple hub to make life
+              easier for everyone.
+            </p>
+          </div>
+
+          <div className="group">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
+              <h3 className="text-xl sm:text-2xl font-medium text-[#ffffff] mb-2">
+                time to copy
+              </h3>
+              <a
+                href="https://timetocopy.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm sm:text-base text-[#b3d9ff] hover:text-[#e6f3ff] transition-colors self-start sm:self-auto"
+              >
+                live
+              </a>
+            </div>
+            <p className="text-sm sm:text-base text-[#e6f3ff] mb-3">
+              productivity application
+            </p>
+            <p className="text-sm sm:text-base text-[#b3d9ff] leading-relaxed">
+              a sophisticated productivity application that transforms how users
+              manage digital content. features include intelligent text
+              categorization and cross-device synchronization.
+            </p>
+          </div>
+
+          <div className="group">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
+              <h3 className="text-xl sm:text-2xl font-medium text-[#ffffff] mb-2">
+                paradigm
+              </h3>
+              <span className="text-sm sm:text-base text-[#b3d9ff] self-start sm:self-auto">
+                in development
+              </span>
+            </div>
+            <p className="text-sm sm:text-base text-[#e6f3ff] mb-3">
+              ai video analysis platform
+            </p>
+            <p className="text-sm sm:text-base text-[#b3d9ff] leading-relaxed">
+              ai-powered video analysis tool for content creators and
+              businesses. extract insights, generate summaries, and analyze
+              engagement patterns from video content.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Skills Section */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-16 sm:py-20 relative z-10">
+        <h2 className="text-lg sm:text-xl font-medium mb-12 sm:mb-16 text-[#ffffff] text-center">
+          skills & tech stack
+        </h2>
+
+        <div className="space-y-12">
+          {/* Languages */}
+          <div className="text-center">
+            <h3 className="text-sm sm:text-base font-medium text-[#b3d9ff] mb-6 tracking-wider uppercase">
+              languages
+            </h3>
+            <div className="flex flex-wrap justify-center gap-4">
               {["TypeScript", "JavaScript", "Python", "HTML", "CSS", "SQL"].map(
                 (skill) => (
                   <span
                     key={skill}
-                    className="px-3 py-1 bg-white/10 rounded-full text-sm"
+                    className="px-4 py-2 bg-transparent text-[#e6f3ff] rounded-full text-sm font-medium border border-[#66b3ff]/40 hover:border-[#66b3ff] hover:bg-[#66b3ff]/10 transition-all duration-300"
                   >
                     {skill}
                   </span>
                 )
               )}
             </div>
-          </motion.div>
-          <motion.div
-            className="bg-white/5 rounded-xl p-6"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <Database size={20} className="text-[#B3B8FF]" />
-              <h3 className="text-xl font-semibold">Frameworks</h3>
-            </div>
-            <div className="flex flex-wrap gap-2">
+          </div>
+
+          {/* Frameworks */}
+          <div className="text-center">
+            <h3 className="text-sm sm:text-base font-medium text-[#b3d9ff] mb-6 tracking-wider uppercase">
+              frameworks
+            </h3>
+            <div className="flex flex-wrap justify-center gap-4">
               {[
                 "Next.js",
                 "React",
@@ -343,297 +261,112 @@ export default function Home() {
               ].map((skill) => (
                 <span
                   key={skill}
-                  className="px-3 py-1 bg-white/10 rounded-full text-sm"
+                  className="px-4 py-2 bg-transparent text-[#e6f3ff] rounded-full text-sm font-medium border border-[#66b3ff]/40 hover:border-[#66b3ff] hover:bg-[#66b3ff]/10 transition-all duration-300"
                 >
                   {skill}
                 </span>
               ))}
             </div>
-          </motion.div>
-          <motion.div
-            className="bg-white/5 rounded-xl p-6"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-          >
-            <div className="flex items-center gap-2 mb-4">
-              <Wrench size={20} className="text-[#B3B8FF]" />
-              <h3 className="text-xl font-semibold">Tools</h3>
-            </div>
-            <div className="flex flex-wrap gap-2">
+          </div>
+
+          {/* Tools */}
+          <div className="text-center">
+            <h3 className="text-sm sm:text-base font-medium text-[#b3d9ff] mb-6 tracking-wider uppercase">
+              tools
+            </h3>
+            <div className="flex flex-wrap justify-center gap-4">
               {["Supabase", "Vercel", "OpenAI", "Git", "Docker", "Redis"].map(
                 (skill) => (
                   <span
                     key={skill}
-                    className="px-3 py-1 bg-white/10 rounded-full text-sm"
+                    className="px-4 py-2 bg-transparent text-[#e6f3ff] rounded-full text-sm font-medium border border-[#66b3ff]/40 hover:border-[#66b3ff] hover:bg-[#66b3ff]/10 transition-all duration-300"
                   >
                     {skill}
                   </span>
                 )
               )}
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Featured Projects Preview */}
-      <section className="max-w-6xl mx-auto px-4 py-24 relative z-10">
-        <motion.h2
-          className="text-3xl font-semibold text-[#B3B8FF] mb-12 text-center"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-        >
-          Featured Projects
-        </motion.h2>
+      {/* About Section */}
+      <section
+        className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20 relative z-10"
+        id="about"
+      >
+        <h2 className="text-lg sm:text-xl font-medium mb-8 sm:mb-12 text-[#ffffff]">
+          about
+        </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {[
-            {
-              name: "Paradigm",
-              description: "AI video analysis platform",
-              tech: ["Next.js", "OpenAI", "FastAPI"],
-              status: "In Development",
-              url: "#",
-            },
-            {
-              name: "ExamVault",
-              description: "AI-powered study platform",
-              tech: ["Next.js", "Supabase", "OpenAI"],
-              status: "Live",
-              url: "https://examvault.app",
-            },
-            {
-              name: "DXB Hoops",
-              description: "Basketball community platform",
-              tech: ["Next.js", "Prisma", "Vercel"],
-              status: "Live • 100+ athletes",
-              url: "https://dxbhoops.com",
-            },
-          ].map((project, index) => (
-            <motion.div
-              key={`featured-${project.name}`}
-              className="bg-white/5 rounded-xl p-6 hover:bg-white/10 transition-all duration-300 cursor-pointer"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.6,
-                delay: index * 0.2,
-                ease: "easeOut",
-              }}
-              onClick={() => {
-                if (project.url !== "#") {
-                  window.open(project.url, "_blank");
-                }
-              }}
-            >
-              <h3 className="text-xl font-semibold text-white mb-2">
-                {project.name}
-              </h3>
-              <p className="text-gray-300 mb-4">{project.description}</p>
-              <div className="flex flex-wrap gap-2 mb-4">
-                {project.tech.map((tech) => (
-                  <span
-                    key={tech}
-                    className="px-2 py-1 bg-[#B3B8FF]/20 text-[#B3B8FF] rounded text-xs"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-              <p className="text-sm text-gray-400">{project.status}</p>
-            </motion.div>
-          ))}
+        <div className="space-y-4 sm:space-y-6 text-[#b3d9ff]">
+          <p className="text-sm sm:text-base leading-relaxed">
+            passionate self-taught developer and entrepreneur. i fell in love
+            with coding through solving everyday problems and now specialize in
+            creating web applications with a focus on ai integration, user
+            experience, and scalable architectures.
+          </p>
+          <p className="text-sm sm:text-base leading-relaxed">
+            currently studying a-levels in pure mathematics, further pure
+            mathematics, computer science, and physics.
+          </p>
+          <div className="pt-2">
+            <p className="text-sm sm:text-base text-[#e6f3ff]">
+              dubai, uae • grappler • basketball player
+            </p>
+          </div>
         </div>
-
-        <motion.div
-          className="text-center"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.8 }}
-        >
-          <Link
-            href="/projects"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-[#B3B8FF]/10 hover:bg-[#B3B8FF]/20 text-[#B3B8FF] rounded-full transition-all duration-300"
-          >
-            <span>View All Projects</span>
-            <ExternalLink size={16} />
-          </Link>
-        </motion.div>
-      </section>
-
-      {/* Education */}
-      <section className="max-w-4xl mx-auto px-4 py-24 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-        >
-          <h2 className="text-3xl font-semibold text-[#B3B8FF] mb-8 text-center">
-            Education
-          </h2>
-          <motion.div
-            className="bg-white/5 rounded-xl p-8 max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            <div className="flex items-center gap-2 mb-6 justify-center">
-              <BookOpen size={24} className="text-[#B3B8FF]" />
-              <h3 className="text-2xl font-semibold">A Levels</h3>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
-              <motion.div
-                className="bg-white/5 rounded-lg p-4"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3 }}
-              >
-                <div className="text-lg font-medium text-white">
-                  Pure Mathematics
-                </div>
-              </motion.div>
-              <motion.div
-                className="bg-white/5 rounded-lg p-4"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4 }}
-              >
-                <div className="text-lg font-medium text-white">
-                  Further Pure Mathematics
-                </div>
-              </motion.div>
-              <motion.div
-                className="bg-white/5 rounded-lg p-4"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.5 }}
-              >
-                <div className="text-lg font-medium text-white">
-                  Computer Science
-                </div>
-              </motion.div>
-              <motion.div
-                className="bg-white/5 rounded-lg p-4"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.6 }}
-              >
-                <div className="text-lg font-medium text-white">Physics</div>
-              </motion.div>
-            </div>
-          </motion.div>
-        </motion.div>
       </section>
 
       {/* Contact Section */}
       <section
-        className="max-w-4xl mx-auto px-4 py-24 relative z-10"
+        className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20 relative z-10"
         id="contact"
       >
-        <motion.div
-          className="text-center"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-        >
-          <motion.h2
-            className="text-3xl font-semibold text-[#B3B8FF] mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            Let&apos;s Build Something Amazing
-          </motion.h2>
-          <motion.p
-            className="text-gray-300 text-lg mb-8 max-w-2xl mx-auto"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-          >
-            I&apos;m always excited to work on new projects and collaborate with
-            talented people. Let&apos;s discuss how we can bring your ideas to
-            life.
-          </motion.p>
-          <motion.div
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
-          >
+        <h2 className="text-lg sm:text-xl font-medium mb-8 sm:mb-12 text-[#ffffff]">
+          contact
+        </h2>
+
+        <div className="space-y-4 sm:space-y-6 text-[#b3d9ff]">
+          <p className="text-sm sm:text-base leading-relaxed">
+            always excited to work on new projects and collaborate with talented
+            people. let's discuss how we can bring your ideas to life.
+          </p>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 pt-2">
             <a
-              href="mailto:bassam@example.com"
-              className="flex items-center gap-2 px-6 py-3 bg-[#B3B8FF] text-black rounded-full hover:bg-[#9ca3ff] transition-all duration-300 font-medium"
+              href="mailto:bassamassaf32@gmail.com"
+              className="flex items-center gap-2 text-sm sm:text-base text-[#b3d9ff] hover:text-[#e6f3ff] transition-colors"
             >
-              <Mail size={16} />
-              <span>Send Email</span>
+              <Mail size={12} />
+              email
             </a>
-            <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 px-6 py-3 border border-[#B3B8FF]/30 text-[#B3B8FF] rounded-full hover:bg-[#B3B8FF]/10 transition-all duration-300"
-            >
-              <Download size={16} />
-              <span>Working on this</span>
-            </a>
-          </motion.div>
-          <motion.div
-            className="flex items-center justify-center gap-6"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-          >
             <a
               href="https://github.com/bassamassaf8"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-[#B3B8FF] transition-colors"
+              className="flex items-center gap-2 text-sm sm:text-base text-[#b3d9ff] hover:text-[#e6f3ff] transition-colors"
             >
-              <Github size={24} />
+              <Github size={12} />
+              github
             </a>
             <a
-              href="https://www.linkedin.com/in/bassam-assaf-b2611b33b/"
+              href="https://www.linkedin.com/in/bassamassaf123/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-400 hover:text-[#B3B8FF] transition-colors"
+              className="flex items-center gap-2 text-sm sm:text-base text-[#b3d9ff] hover:text-[#e6f3ff] transition-colors"
             >
-              <Linkedin size={24} />
+              <Linkedin size={12} />
+              linkedin
             </a>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-8 relative z-10">
-        <motion.div
-          className="max-w-4xl mx-auto px-4 text-center text-gray-400 text-sm"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-        >
-          <p>
-            &copy; 2025 Bassam Assaf. Built with Next.js, TypeScript, and Framer
-            Motion.
-          </p>
-          <p className="mt-2">Updated January 2025</p>
-        </motion.div>
+      <footer className="border-t border-[#001a33] py-6 sm:py-8 relative z-10">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center text-xs sm:text-sm text-[#b3d9ff]">
+          <p>&copy; 2025 bassam assaf</p>
+        </div>
       </footer>
     </div>
   );
