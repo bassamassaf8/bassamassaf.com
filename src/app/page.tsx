@@ -54,12 +54,12 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-20 relative z-10">
-        <div className="max-w-2xl mx-auto text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-light mb-8 tracking-wide text-[#ffffff]">
+      <section className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-16 relative z-10">
+        <div className="max-w-3xl mx-auto text-center">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-light mb-10 tracking-wide text-[#ffffff]">
             bassam assaf
           </h1>
-          <p className="text-lg sm:text-xl text-[#e6f3ff] mb-10 max-w-md mx-auto leading-relaxed">
+          <p className="text-xl sm:text-2xl text-[#e6f3ff] mb-12 max-w-lg mx-auto leading-relaxed">
             developer • entrepreneur • student
           </p>
           <div className="flex items-center justify-center gap-6 sm:gap-8 text-sm sm:text-base text-[#b3d9ff]">
@@ -151,26 +151,19 @@ export default function Home() {
           <div className="group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
               <h3 className="text-xl sm:text-2xl font-medium text-[#ffffff] mb-2">
-                domaindle
+                paradigm
               </h3>
-              <a
-                href="https://domaindle.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm sm:text-base text-[#b3d9ff] hover:text-[#e6f3ff] transition-colors self-start sm:self-auto"
-              >
-                live
-              </a>
+              <span className="text-sm sm:text-base text-[#b3d9ff] self-start sm:self-auto">
+                in development
+              </span>
             </div>
             <p className="text-sm sm:text-base text-[#e6f3ff] mb-3">
-              word game hub
+              ai video analysis platform
             </p>
             <p className="text-sm sm:text-base text-[#b3d9ff] leading-relaxed">
-              this was literally the first thing i ever made. every morning at
-              school, our teacher would put up games like wordle and we'd all
-              get stuck trying to find similar games to play. i got tired of the
-              hunt, so one day i just decided to build a simple hub to make life
-              easier for everyone.
+              ai-powered video analysis tool for content creators and
+              businesses. extract insights, generate summaries, and analyze
+              engagement patterns from video content.
             </p>
           </div>
 
@@ -201,19 +194,26 @@ export default function Home() {
           <div className="group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
               <h3 className="text-xl sm:text-2xl font-medium text-[#ffffff] mb-2">
-                paradigm
+                domaindle
               </h3>
-              <span className="text-sm sm:text-base text-[#b3d9ff] self-start sm:self-auto">
-                in development
-              </span>
+              <a
+                href="https://domaindle.vercel.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm sm:text-base text-[#b3d9ff] hover:text-[#e6f3ff] transition-colors self-start sm:self-auto"
+              >
+                live
+              </a>
             </div>
             <p className="text-sm sm:text-base text-[#e6f3ff] mb-3">
-              ai video analysis platform
+              word game hub
             </p>
             <p className="text-sm sm:text-base text-[#b3d9ff] leading-relaxed">
-              ai-powered video analysis tool for content creators and
-              businesses. extract insights, generate summaries, and analyze
-              engagement patterns from video content.
+              this was literally the first thing i ever made. every morning at
+              school, our teacher would put up games like wordle and we'd all
+              get stuck trying to find similar games to play. i got tired of the
+              hunt, so one day i just decided to build a simple hub to make life
+              easier for everyone.
             </p>
           </div>
         </div>

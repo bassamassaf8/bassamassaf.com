@@ -23,8 +23,8 @@ export const metadata: Metadata = {
   authors: [{ name: "Bassam Assaf" }],
   creator: "Bassam Assaf",
   icons: {
-    icon: "/favicon.png",
-    shortcut: "/favicon.png",
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
     apple: "/favicon.png",
   },
   openGraph: {
