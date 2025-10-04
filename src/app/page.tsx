@@ -20,33 +20,25 @@ export default function Home() {
             : 'bg-gradient-to-br from-[#e0f2fe] via-transparent to-[#f0f9ff]'
         }`} />
         
-        {/* Subtle grid pattern */}
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `
-              linear-gradient(${isDarkMode ? 'rgba(102, 179, 255, 0.1)' : 'rgba(59, 130, 246, 0.1)'} 1px, transparent 1px),
-              linear-gradient(90deg, ${isDarkMode ? 'rgba(102, 179, 255, 0.1)' : 'rgba(59, 130, 246, 0.1)'} 1px, transparent 1px)
-            `,
-            backgroundSize: "60px 60px",
-          }}
-        />
 
-        {/* Subtle animated dots */}
+        {/* Fun floating shapes background */}
         <div className="absolute inset-0 overflow-hidden">
-          {[...Array(15)].map((_, i) => (
+          {[...Array(12)].map((_, i) => (
             <div
-              key={i}
-              className={`absolute w-1 h-1 rounded-full opacity-20 animate-pulse ${
-                isDarkMode ? 'bg-[#66b3ff]' : 'bg-[#3b82f6]'
+            key={i}
+              className={`absolute opacity-10 animate-bounce ${
+                isDarkMode ? 'text-[#66b3ff]' : 'text-[#3b82f6]'
               }`}
-              style={{
+            style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 3}s`,
-                animationDuration: `${2 + Math.random() * 2}s`,
+                animationDelay: `${Math.random() * 4}s`,
+                animationDuration: `${3 + Math.random() * 2}s`,
+                fontSize: `${20 + Math.random() * 30}px`,
               }}
-            />
+            >
+              {['●', '▲', '◆', '★', '◐', '◑'][Math.floor(Math.random() * 6)]}
+            </div>
           ))}
         </div>
       </div>
@@ -82,16 +74,16 @@ export default function Home() {
                 }`}
               >
                 about
-              </a>
-              <a
+        </a>
+        <a
                 href="#cv"
                 className={`hover:opacity-80 transition-all duration-300 ${
                   isDarkMode ? 'hover:text-[#e6f3ff]' : 'hover:text-gray-900'
                 }`}
               >
                 cv
-              </a>
-              <a
+        </a>
+        <a
                 href="#contact"
                 className={`hover:opacity-80 transition-all duration-300 ${
                   isDarkMode ? 'hover:text-[#e6f3ff]' : 'hover:text-gray-900'
@@ -170,7 +162,9 @@ export default function Home() {
         className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20 relative z-10"
         id="projects"
       >
-        <h2 className="text-lg sm:text-xl font-medium mb-8 sm:mb-12 text-[#ffffff]">
+        <h2 className={`text-lg sm:text-xl font-medium mb-8 sm:mb-12 transition-colors duration-500 ${
+          isDarkMode ? 'text-white' : 'text-gray-900'
+        }`}>
           projects
         </h2>
 
@@ -229,7 +223,7 @@ export default function Home() {
               <span className="text-sm sm:text-base text-[#b3d9ff] self-start sm:self-auto">
                 in development
               </span>
-            </div>
+              </div>
             <p className="text-sm sm:text-base text-[#e6f3ff] mb-3">
               ai video analysis platform
             </p>
@@ -238,7 +232,7 @@ export default function Home() {
               businesses. extract insights, generate summaries, and analyze
               engagement patterns from video content.
             </p>
-          </div>
+              </div>
 
           <div className="group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
@@ -253,7 +247,7 @@ export default function Home() {
               >
                 live
               </a>
-            </div>
+              </div>
             <p className="text-sm sm:text-base text-[#e6f3ff] mb-3">
               productivity application
             </p>
@@ -292,44 +286,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CV Section */}
-      <section
-        className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20 relative z-10"
-        id="cv"
-      >
-        <h2 className={`text-lg sm:text-xl font-medium mb-8 sm:mb-12 text-center transition-colors duration-500 ${
-          isDarkMode ? 'text-white' : 'text-gray-900'
-        }`}>
-          cv
-        </h2>
-        
-        <div className={`text-center p-8 rounded-xl border transition-all duration-500 ${
-          isDarkMode 
-            ? 'bg-white/5 border-white/10' 
-            : 'bg-gray-50 border-gray-200'
-        }`}>
-          <div className={`mb-4 transition-colors duration-500 ${
-            isDarkMode ? 'text-[#e6f3ff]' : 'text-gray-700'
-          }`}>
-            <Download size={32} className="mx-auto mb-4 opacity-60" />
-            <p className="text-lg font-medium mb-2">coming soon</p>
-            <p className="text-sm opacity-80">
-              my cv is currently being updated and will be available for download soon
-            </p>
-          </div>
-        </div>
-      </section>
 
       {/* Skills Section */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 py-16 sm:py-20 relative z-10">
-        <h2 className="text-lg sm:text-xl font-medium mb-12 sm:mb-16 text-[#ffffff] text-center">
+        <h2 className={`text-lg sm:text-xl font-medium mb-12 sm:mb-16 text-center transition-colors duration-500 ${
+          isDarkMode ? 'text-white' : 'text-gray-900'
+        }`}>
           skills & tech stack
         </h2>
 
         <div className="space-y-12">
           {/* Languages */}
           <div className="text-center">
-            <h3 className="text-sm sm:text-base font-medium text-[#b3d9ff] mb-6 tracking-wider uppercase">
+            <h3 className={`text-sm sm:text-base font-medium mb-6 tracking-wider uppercase transition-colors duration-500 ${
+              isDarkMode ? 'text-[#b3d9ff]' : 'text-blue-600'
+            }`}>
               languages
             </h3>
             <div className="flex flex-wrap justify-center gap-4">
@@ -337,18 +308,24 @@ export default function Home() {
                 (skill) => (
                   <span
                     key={skill}
-                    className="px-4 py-2 bg-transparent text-[#e6f3ff] rounded-full text-sm font-medium border border-[#66b3ff]/40 hover:border-[#66b3ff] hover:bg-[#66b3ff]/10 transition-all duration-300"
+                    className={`px-4 py-2 bg-transparent rounded-full text-sm font-medium border transition-all duration-300 ${
+                      isDarkMode 
+                        ? 'text-[#e6f3ff] border-[#66b3ff]/40 hover:border-[#66b3ff] hover:bg-[#66b3ff]/10' 
+                        : 'text-gray-700 border-blue-300 hover:border-blue-500 hover:bg-blue-50'
+                    }`}
                   >
                     {skill}
                   </span>
                 )
               )}
             </div>
-          </div>
+            </div>
 
           {/* Frameworks */}
           <div className="text-center">
-            <h3 className="text-sm sm:text-base font-medium text-[#b3d9ff] mb-6 tracking-wider uppercase">
+            <h3 className={`text-sm sm:text-base font-medium mb-6 tracking-wider uppercase transition-colors duration-500 ${
+              isDarkMode ? 'text-[#b3d9ff]' : 'text-blue-600'
+            }`}>
               frameworks
             </h3>
             <div className="flex flex-wrap justify-center gap-4">
@@ -368,11 +345,13 @@ export default function Home() {
                 </span>
               ))}
             </div>
-          </div>
+            </div>
 
           {/* Tools */}
           <div className="text-center">
-            <h3 className="text-sm sm:text-base font-medium text-[#b3d9ff] mb-6 tracking-wider uppercase">
+            <h3 className={`text-sm sm:text-base font-medium mb-6 tracking-wider uppercase transition-colors duration-500 ${
+              isDarkMode ? 'text-[#b3d9ff]' : 'text-blue-600'
+            }`}>
               tools
             </h3>
             <div className="flex flex-wrap justify-center gap-4">
@@ -380,7 +359,11 @@ export default function Home() {
                 (skill) => (
                   <span
                     key={skill}
-                    className="px-4 py-2 bg-transparent text-[#e6f3ff] rounded-full text-sm font-medium border border-[#66b3ff]/40 hover:border-[#66b3ff] hover:bg-[#66b3ff]/10 transition-all duration-300"
+                    className={`px-4 py-2 bg-transparent rounded-full text-sm font-medium border transition-all duration-300 ${
+                      isDarkMode 
+                        ? 'text-[#e6f3ff] border-[#66b3ff]/40 hover:border-[#66b3ff] hover:bg-[#66b3ff]/10' 
+                        : 'text-gray-700 border-blue-300 hover:border-blue-500 hover:bg-blue-50'
+                    }`}
                   >
                     {skill}
                   </span>
@@ -396,11 +379,15 @@ export default function Home() {
         className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20 relative z-10"
         id="about"
       >
-        <h2 className="text-lg sm:text-xl font-medium mb-8 sm:mb-12 text-[#ffffff]">
+        <h2 className={`text-lg sm:text-xl font-medium mb-8 sm:mb-12 transition-colors duration-500 ${
+          isDarkMode ? 'text-white' : 'text-gray-900'
+        }`}>
           about
         </h2>
 
-        <div className="space-y-4 sm:space-y-6 text-[#b3d9ff]">
+        <div className={`space-y-4 sm:space-y-6 transition-colors duration-500 ${
+          isDarkMode ? 'text-[#b3d9ff]' : 'text-gray-600'
+        }`}>
           <p className="text-sm sm:text-base leading-relaxed">
             passionate self-taught developer and entrepreneur. i fell in love
             with coding through solving everyday problems and now specialize in
@@ -412,10 +399,12 @@ export default function Home() {
             mathematics, computer science, and physics.
           </p>
           <div className="pt-2">
-            <p className="text-sm sm:text-base text-[#e6f3ff]">
+            <p className={`text-sm sm:text-base transition-colors duration-500 ${
+              isDarkMode ? 'text-[#e6f3ff]' : 'text-gray-700'
+            }`}>
               dubai, uae • grappler • basketball player
             </p>
-          </div>
+              </div>
         </div>
       </section>
 
@@ -424,11 +413,15 @@ export default function Home() {
         className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20 relative z-10"
         id="contact"
       >
-        <h2 className="text-lg sm:text-xl font-medium mb-8 sm:mb-12 text-[#ffffff]">
+        <h2 className={`text-lg sm:text-xl font-medium mb-8 sm:mb-12 transition-colors duration-500 ${
+          isDarkMode ? 'text-white' : 'text-gray-900'
+        }`}>
           contact
         </h2>
 
-        <div className="space-y-4 sm:space-y-6 text-[#b3d9ff]">
+        <div className={`space-y-4 sm:space-y-6 transition-colors duration-500 ${
+          isDarkMode ? 'text-[#b3d9ff]' : 'text-gray-600'
+        }`}>
           <p className="text-sm sm:text-base leading-relaxed">
             always excited to work on new projects and collaborate with talented
             people. let's discuss how we can bring your ideas to life.
@@ -436,7 +429,11 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 pt-2">
             <a
               href="mailto:bassamassaf32@gmail.com"
-              className="flex items-center gap-2 text-sm sm:text-base text-[#b3d9ff] hover:text-[#e6f3ff] transition-colors"
+              className={`flex items-center gap-2 text-sm sm:text-base transition-colors ${
+                isDarkMode 
+                  ? 'text-[#b3d9ff] hover:text-[#e6f3ff]' 
+                  : 'text-blue-600 hover:text-blue-800'
+              }`}
             >
               <Mail size={12} />
               email
@@ -445,7 +442,11 @@ export default function Home() {
               href="https://github.com/bassamassaf8"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm sm:text-base text-[#b3d9ff] hover:text-[#e6f3ff] transition-colors"
+              className={`flex items-center gap-2 text-sm sm:text-base transition-colors ${
+                isDarkMode 
+                  ? 'text-[#b3d9ff] hover:text-[#e6f3ff]' 
+                  : 'text-blue-600 hover:text-blue-800'
+              }`}
             >
               <Github size={12} />
               github
@@ -454,7 +455,11 @@ export default function Home() {
               href="https://www.linkedin.com/in/bassamassaf123/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm sm:text-base text-[#b3d9ff] hover:text-[#e6f3ff] transition-colors"
+              className={`flex items-center gap-2 text-sm sm:text-base transition-colors ${
+                isDarkMode 
+                  ? 'text-[#b3d9ff] hover:text-[#e6f3ff]' 
+                  : 'text-blue-600 hover:text-blue-800'
+              }`}
             >
               <Linkedin size={12} />
               linkedin
