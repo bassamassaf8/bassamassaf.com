@@ -13,7 +13,11 @@ type Path = {
   phase: number;
 };
 
-export default function NeonMazeBackground({ isDark = true }: { isDark?: boolean }) {
+export default function NeonMazeBackground({
+  isDark = true,
+}: {
+  isDark?: boolean;
+}) {
   const baseRef = useRef<HTMLCanvasElement | null>(null);
   const animRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -42,6 +46,7 @@ export default function NeonMazeBackground({ isDark = true }: { isDark?: boolean
   );
 
   const pathsRef = useRef<Path[]>([]);
+  const dashRef = useRef<number>(0);
 
   function fitCanvas(canvas: HTMLCanvasElement) {
     const dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
@@ -141,7 +146,9 @@ export default function NeonMazeBackground({ isDark = true }: { isDark?: boolean
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.save();
     ctx.lineWidth = 1;
-    ctx.strokeStyle = isDark ? "rgba(60, 255, 180, 0.05)" : "rgba(60, 100, 200, 0.06)";
+    ctx.strokeStyle = isDark
+      ? "rgba(60, 255, 180, 0.05)"
+      : "rgba(60, 100, 200, 0.06)";
     ctx.shadowColor = "transparent";
     ctx.beginPath();
     for (const path of paths) {
@@ -244,36 +251,30 @@ export default function NeonMazeBackground({ isDark = true }: { isDark?: boolean
       ctx.clearRect(0, 0, anim.width, anim.height);
 
       if (!prefersReducedMotion && !document.hidden) {
-        for (const p of paths) {
-          p.head = (p.head + p.speed * dt) % p.totalLen;
-          const tailLen = 80; // shorter pulse tail
-          const start = p.head - tailLen;
-          const end = p.head;
+        dashRef.current = (dashRef.current + 60 * dt) % 10000; // global dash offset
 
-          const beat = 0.5 + 0.3 * Math.max(0, Math.sin(t / 400 + p.phase));
-          const width = 1 + 1.2 * beat;
+        for (const p of paths) {
+          // use head as per-path phase
+          p.head = (p.head + p.speed * dt) % p.totalLen;
+
+          const beat = 0.5 + 0.3 * Math.max(0, Math.sin(t / 500 + p.phase));
+          const width = 0.8 + 0.9 * beat;
 
           ctx.save();
           ctx.lineCap = "round";
           ctx.lineJoin = "round";
           ctx.lineWidth = width;
           ctx.shadowColor = p.color;
-          ctx.shadowBlur = 8 + 14 * beat; // softer glow
-          ctx.strokeStyle = p.color.replace(", 1)", `, ${0.65 + 0.25 * beat})`);
+          ctx.shadowBlur = 6 + 10 * beat; // subtler glow
+          ctx.strokeStyle = p.color.replace(", 1)", `, ${0.35 + 0.25 * beat})`);
+          ctx.setLineDash([2, 14]);
+          ctx.lineDashOffset = -((dashRef.current + p.head * 0.2) % 1000);
 
-          if (start < 0) {
-            strokePolylinePortion(
-              ctx,
-              p.points,
-              p.segLens,
-              p.totalLen + start,
-              p.totalLen
-            );
-            strokePolylinePortion(ctx, p.points, p.segLens, 0, end);
-          } else {
-            strokePolylinePortion(ctx, p.points, p.segLens, start, end);
-          }
-
+          const pts = p.points;
+          ctx.beginPath();
+          ctx.moveTo(pts[0].x, pts[0].y);
+          for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+          ctx.stroke();
           ctx.restore();
         }
       }

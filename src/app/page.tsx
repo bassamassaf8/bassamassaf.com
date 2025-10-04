@@ -39,7 +39,7 @@ export default function Home() {
             }`}
           >
             bassam assaf
-      </div>
+          </div>
           <div className="flex items-center gap-4 sm:gap-6">
             <div
               className={`flex gap-4 sm:gap-6 text-xs sm:text-sm transition-colors duration-500 ${
@@ -61,16 +61,16 @@ export default function Home() {
                 }`}
               >
                 about
-        </a>
-        <a
+              </a>
+              <a
                 href="#cv"
                 className={`hover:opacity-80 transition-all duration-300 ${
                   isDarkMode ? "hover:text-[#e6f3ff]" : "hover:text-gray-900"
                 }`}
               >
                 cv
-        </a>
-        <a
+              </a>
+              <a
                 href="#contact"
                 className={`hover:opacity-80 transition-all duration-300 ${
                   isDarkMode ? "hover:text-[#e6f3ff]" : "hover:text-gray-900"
@@ -258,7 +258,7 @@ export default function Home() {
               >
                 in development
               </span>
-              </div>
+            </div>
             <p
               className={`text-sm sm:text-base mb-3 transition-colors duration-500 ${
                 isDarkMode ? "text-[#e6f3ff]" : "text-gray-700"
@@ -275,7 +275,7 @@ export default function Home() {
               businesses. extract insights, generate summaries, and analyze
               engagement patterns from video content.
             </p>
-              </div>
+          </div>
 
           <div className="group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
@@ -298,7 +298,7 @@ export default function Home() {
               >
                 live
               </a>
-              </div>
+            </div>
             <p
               className={`text-sm sm:text-base mb-3 transition-colors duration-500 ${
                 isDarkMode ? "text-[#e6f3ff]" : "text-gray-700"
@@ -492,7 +492,7 @@ export default function Home() {
             >
               dubai, uae • grappler • basketball player
             </p>
-              </div>
+          </div>
         </div>
       </section>
 
