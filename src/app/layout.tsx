@@ -23,7 +23,10 @@ export const metadata: Metadata = {
   authors: [{ name: "Bassam Assaf" }],
   creator: "Bassam Assaf",
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico", sizes: "32x32", type: "image/x-icon" },
+      { url: "/favicon.png", sizes: "16x16", type: "image/png" },
+    ],
     shortcut: "/favicon.ico",
     apple: "/favicon.png",
   },

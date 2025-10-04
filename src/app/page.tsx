@@ -1,54 +1,113 @@
-import { Github, Mail, ExternalLink, Linkedin } from "lucide-react";
+import { Github, Mail, ExternalLink, Linkedin, Sun, Moon, Download } from "lucide-react";
+import { useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-[#000811] via-[#000408] to-[#000000] text-white relative overflow-hidden">
-      {/* Geometric blueprint background */}
-      <div className="fixed inset-0 opacity-25">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#001a33] via-transparent to-[#000d1a]" />
-        <div className="absolute inset-0 bg-gradient-to-tl from-[#002244] via-transparent to-[#001122]" />
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
-        {/* Geometric grid pattern - more visible */}
+  return (
+    <div className={`min-h-screen relative overflow-hidden transition-colors duration-500 ${
+      isDarkMode 
+        ? 'bg-gradient-to-b from-[#000811] via-[#000408] to-[#000000] text-white' 
+        : 'bg-gradient-to-b from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] text-gray-900'
+    }`}>
+      {/* Subtle animated background */}
+      <div className="fixed inset-0 opacity-10">
+        <div className={`absolute inset-0 transition-colors duration-500 ${
+          isDarkMode 
+            ? 'bg-gradient-to-br from-[#001a33] via-transparent to-[#000d1a]' 
+            : 'bg-gradient-to-br from-[#e0f2fe] via-transparent to-[#f0f9ff]'
+        }`} />
+        
+        {/* Subtle grid pattern */}
         <div
           className="absolute inset-0"
           style={{
             backgroundImage: `
-              linear-gradient(rgba(102, 179, 255, 0.2) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(102, 179, 255, 0.2) 1px, transparent 1px)
+              linear-gradient(${isDarkMode ? 'rgba(102, 179, 255, 0.1)' : 'rgba(59, 130, 246, 0.1)'} 1px, transparent 1px),
+              linear-gradient(90deg, ${isDarkMode ? 'rgba(102, 179, 255, 0.1)' : 'rgba(59, 130, 246, 0.1)'} 1px, transparent 1px)
             `,
-            backgroundSize: "40px 40px",
+            backgroundSize: "60px 60px",
           }}
         />
 
-        {/* Blueprint-style lines - more visible */}
-        <div className="absolute top-32 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#66b3ff] to-transparent opacity-40" />
-        <div className="absolute bottom-40 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#66b3ff] to-transparent opacity-35" />
-        <div className="absolute top-0 left-32 w-px h-full bg-gradient-to-b from-transparent via-[#66b3ff] to-transparent opacity-40" />
-        <div className="absolute top-0 right-40 w-px h-full bg-gradient-to-b from-transparent via-[#66b3ff] to-transparent opacity-35" />
+        {/* Subtle animated dots */}
+        <div className="absolute inset-0 overflow-hidden">
+          {[...Array(15)].map((_, i) => (
+            <div
+              key={i}
+              className={`absolute w-1 h-1 rounded-full opacity-20 animate-pulse ${
+                isDarkMode ? 'bg-[#66b3ff]' : 'bg-[#3b82f6]'
+              }`}
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${2 + Math.random() * 2}s`,
+              }}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 p-4 sm:p-6 z-20 bg-gradient-to-b from-[#000811]/80 to-transparent backdrop-blur-sm">
+      <nav className={`fixed top-0 left-0 right-0 p-4 sm:p-6 z-20 backdrop-blur-sm transition-colors duration-500 ${
+        isDarkMode 
+          ? 'bg-gradient-to-b from-[#000811]/80 to-transparent' 
+          : 'bg-gradient-to-b from-white/80 to-transparent'
+      }`}>
         <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div className="text-sm sm:text-base font-medium text-[#e6f3ff]">
+          <div className={`text-sm sm:text-base font-medium transition-colors duration-500 ${
+            isDarkMode ? 'text-[#e6f3ff]' : 'text-gray-900'
+          }`}>
             bassam assaf
           </div>
-          <div className="flex gap-4 sm:gap-6 text-xs sm:text-sm text-[#b3d9ff]">
-            <a
-              href="#projects"
-              className="hover:text-[#e6f3ff] transition-colors"
+          <div className="flex items-center gap-4 sm:gap-6">
+            <div className={`flex gap-4 sm:gap-6 text-xs sm:text-sm transition-colors duration-500 ${
+              isDarkMode ? 'text-[#b3d9ff]' : 'text-gray-600'
+            }`}>
+              <a
+                href="#projects"
+                className={`hover:opacity-80 transition-all duration-300 ${
+                  isDarkMode ? 'hover:text-[#e6f3ff]' : 'hover:text-gray-900'
+                }`}
+              >
+                projects
+              </a>
+              <a 
+                href="#about" 
+                className={`hover:opacity-80 transition-all duration-300 ${
+                  isDarkMode ? 'hover:text-[#e6f3ff]' : 'hover:text-gray-900'
+                }`}
+              >
+                about
+              </a>
+              <a
+                href="#cv"
+                className={`hover:opacity-80 transition-all duration-300 ${
+                  isDarkMode ? 'hover:text-[#e6f3ff]' : 'hover:text-gray-900'
+                }`}
+              >
+                cv
+              </a>
+              <a
+                href="#contact"
+                className={`hover:opacity-80 transition-all duration-300 ${
+                  isDarkMode ? 'hover:text-[#e6f3ff]' : 'hover:text-gray-900'
+                }`}
+              >
+                contact
+              </a>
+            </div>
+            <button
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className={`p-2 rounded-lg transition-all duration-300 hover:scale-110 ${
+                isDarkMode 
+                  ? 'bg-white/10 hover:bg-white/20 text-white' 
+                  : 'bg-gray-200 hover:bg-gray-300 text-gray-900'
+              }`}
             >
-              projects
-            </a>
-            <a href="#about" className="hover:text-[#e6f3ff] transition-colors">
-              about
-            </a>
-            <a
-              href="#contact"
-              className="hover:text-[#e6f3ff] transition-colors"
-            >
-              contact
-            </a>
+              {isDarkMode ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
           </div>
         </div>
       </nav>
@@ -56,25 +115,35 @@ export default function Home() {
       {/* Hero Section */}
       <section className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-16 relative z-10">
         <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-light mb-10 tracking-wide text-[#ffffff]">
+          <h1 className={`text-5xl sm:text-6xl md:text-7xl font-light mb-10 tracking-wide transition-colors duration-500 ${
+            isDarkMode ? 'text-white' : 'text-gray-900'
+          }`}>
             bassam assaf
           </h1>
-          <p className="text-xl sm:text-2xl text-[#e6f3ff] mb-12 max-w-lg mx-auto leading-relaxed">
+          <p className={`text-xl sm:text-2xl mb-12 max-w-lg mx-auto leading-relaxed transition-colors duration-500 ${
+            isDarkMode ? 'text-[#e6f3ff]' : 'text-gray-700'
+          }`}>
             developer • entrepreneur • student
           </p>
-          <div className="flex items-center justify-center gap-6 sm:gap-8 text-sm sm:text-base text-[#b3d9ff]">
+          <div className={`flex items-center justify-center gap-6 sm:gap-8 text-sm sm:text-base transition-colors duration-500 ${
+            isDarkMode ? 'text-[#b3d9ff]' : 'text-gray-600'
+          }`}>
             <a
               href="https://github.com/bassamassaf8"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 hover:text-[#e6f3ff] transition-colors"
+              className={`flex items-center gap-2 transition-all duration-300 hover:scale-105 ${
+                isDarkMode ? 'hover:text-[#e6f3ff]' : 'hover:text-gray-900'
+              }`}
             >
               <Github size={12} />
               github
             </a>
             <a
               href="mailto:bassamassaf32@gmail.com"
-              className="flex items-center gap-2 hover:text-[#e6f3ff] transition-colors"
+              className={`flex items-center gap-2 transition-all duration-300 hover:scale-105 ${
+                isDarkMode ? 'hover:text-[#e6f3ff]' : 'hover:text-gray-900'
+              }`}
             >
               <Mail size={12} />
               email
@@ -83,7 +152,9 @@ export default function Home() {
               href="https://www.linkedin.com/in/bassamassaf123/"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 hover:text-[#e6f3ff] transition-colors"
+              className={`flex items-center gap-2 transition-all duration-300 hover:scale-105 ${
+                isDarkMode ? 'hover:text-[#e6f3ff]' : 'hover:text-gray-900'
+              }`}
             >
               <Linkedin size={12} />
               linkedin
@@ -214,6 +285,34 @@ export default function Home() {
               get stuck trying to find similar games to play. i got tired of the
               hunt, so one day i just decided to build a simple hub to make life
               easier for everyone.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* CV Section */}
+      <section
+        className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20 relative z-10"
+        id="cv"
+      >
+        <h2 className={`text-lg sm:text-xl font-medium mb-8 sm:mb-12 text-center transition-colors duration-500 ${
+          isDarkMode ? 'text-white' : 'text-gray-900'
+        }`}>
+          cv
+        </h2>
+        
+        <div className={`text-center p-8 rounded-xl border transition-all duration-500 ${
+          isDarkMode 
+            ? 'bg-white/5 border-white/10' 
+            : 'bg-gray-50 border-gray-200'
+        }`}>
+          <div className={`mb-4 transition-colors duration-500 ${
+            isDarkMode ? 'text-[#e6f3ff]' : 'text-gray-700'
+          }`}>
+            <Download size={32} className="mx-auto mb-4 opacity-60" />
+            <p className="text-lg font-medium mb-2">coming soon</p>
+            <p className="text-sm opacity-80">
+              my cv is currently being updated and will be available for download soon
             </p>
           </div>
         </div>
