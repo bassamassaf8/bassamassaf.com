@@ -12,35 +12,54 @@ export default function Home() {
         ? 'bg-gradient-to-b from-[#000811] via-[#000408] to-[#000000] text-white' 
         : 'bg-gradient-to-b from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] text-gray-900'
     }`}>
-      {/* Subtle animated background */}
-      <div className="fixed inset-0 opacity-10">
+      {/* Neon Circuit Board Background */}
+      <div className="fixed inset-0 overflow-hidden">
         <div className={`absolute inset-0 transition-colors duration-500 ${
           isDarkMode 
-            ? 'bg-gradient-to-br from-[#001a33] via-transparent to-[#000d1a]' 
-            : 'bg-gradient-to-br from-[#e0f2fe] via-transparent to-[#f0f9ff]'
+            ? 'bg-gradient-to-br from-[#000811] via-[#000408] to-[#000000]' 
+            : 'bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0]'
         }`} />
         
-
-        {/* Fun floating shapes background */}
-        <div className="absolute inset-0 overflow-hidden">
-          {[...Array(12)].map((_, i) => (
-            <div
-            key={i}
-              className={`absolute opacity-10 animate-bounce ${
-                isDarkMode ? 'text-[#66b3ff]' : 'text-[#3b82f6]'
-              }`}
-            style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 4}s`,
-                animationDuration: `${3 + Math.random() * 2}s`,
-                fontSize: `${20 + Math.random() * 30}px`,
-              }}
-            >
-              {['●', '▲', '◆', '★', '◐', '◑'][Math.floor(Math.random() * 6)]}
-            </div>
-          ))}
-        </div>
+        {/* Animated Neon Lines */}
+        <svg className="absolute inset-0 w-full h-full opacity-20" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor={isDarkMode ? "#00ffff" : "#3b82f6"} />
+              <stop offset="50%" stopColor={isDarkMode ? "#66b3ff" : "#1d4ed8"} />
+              <stop offset="100%" stopColor={isDarkMode ? "#8b5cf6" : "#7c3aed"} />
+            </linearGradient>
+          </defs>
+          
+          {/* Circuit Lines */}
+          <g stroke="url(#neonGradient)" strokeWidth="1" fill="none">
+            {/* Horizontal Lines */}
+            <line x1="0" y1="20%" x2="100%" y2="20%" className="animate-pulse" style={{animationDelay: '0s', animationDuration: '3s'}} />
+            <line x1="0" y1="40%" x2="100%" y2="40%" className="animate-pulse" style={{animationDelay: '1s', animationDuration: '4s'}} />
+            <line x1="0" y1="60%" x2="100%" y2="60%" className="animate-pulse" style={{animationDelay: '2s', animationDuration: '3.5s'}} />
+            <line x1="0" y1="80%" x2="100%" y2="80%" className="animate-pulse" style={{animationDelay: '0.5s', animationDuration: '4.5s'}} />
+            
+            {/* Vertical Lines */}
+            <line x1="20%" y1="0" x2="20%" y2="100%" className="animate-pulse" style={{animationDelay: '1.5s', animationDuration: '3.2s'}} />
+            <line x1="40%" y1="0" x2="40%" y2="100%" className="animate-pulse" style={{animationDelay: '0.8s', animationDuration: '4.2s'}} />
+            <line x1="60%" y1="0" x2="60%" y2="100%" className="animate-pulse" style={{animationDelay: '2.2s', animationDuration: '3.8s'}} />
+            <line x1="80%" y1="0" x2="80%" y2="100%" className="animate-pulse" style={{animationDelay: '1.2s', animationDuration: '4.8s'}} />
+            
+            {/* Diagonal Circuit Patterns */}
+            <path d="M0,0 L25%,25% L50%,0 L75%,25% L100%,0" className="animate-pulse" style={{animationDelay: '0.3s', animationDuration: '5s'}} />
+            <path d="M0,100% L25%,75% L50%,100% L75%,75% L100%,100%" className="animate-pulse" style={{animationDelay: '1.8s', animationDuration: '4.7s'}} />
+            <path d="M0,50% L30%,20% L60%,50% L90%,20% L100%,50%" className="animate-pulse" style={{animationDelay: '2.5s', animationDuration: '3.9s'}} />
+          </g>
+          
+          {/* Circuit Nodes */}
+          <g fill="url(#neonGradient)">
+            <circle cx="20%" cy="20%" r="2" className="animate-pulse" style={{animationDelay: '0s', animationDuration: '2s'}} />
+            <circle cx="40%" cy="40%" r="2" className="animate-pulse" style={{animationDelay: '1s', animationDuration: '2.5s'}} />
+            <circle cx="60%" cy="60%" r="2" className="animate-pulse" style={{animationDelay: '2s', animationDuration: '2.2s'}} />
+            <circle cx="80%" cy="80%" r="2" className="animate-pulse" style={{animationDelay: '0.5s', animationDuration: '2.8s'}} />
+            <circle cx="30%" cy="70%" r="2" className="animate-pulse" style={{animationDelay: '1.5s', animationDuration: '2.3s'}} />
+            <circle cx="70%" cy="30%" r="2" className="animate-pulse" style={{animationDelay: '2.5s', animationDuration: '2.7s'}} />
+          </g>
+        </svg>
       </div>
 
       {/* Navigation */}
@@ -171,22 +190,32 @@ export default function Home() {
         <div className="space-y-8 sm:space-y-10">
           <div className="group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
-              <h3 className="text-xl sm:text-2xl font-medium text-[#ffffff] mb-2">
+              <h3 className={`text-xl sm:text-2xl font-medium mb-2 transition-colors duration-500 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
                 examvault
               </h3>
               <a
                 href="https://examvault.app"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm sm:text-base text-[#b3d9ff] hover:text-[#e6f3ff] transition-colors self-start sm:self-auto"
+                className={`text-sm sm:text-base transition-colors self-start sm:self-auto ${
+                  isDarkMode 
+                    ? 'text-[#b3d9ff] hover:text-[#e6f3ff]' 
+                    : 'text-blue-600 hover:text-blue-800'
+                }`}
               >
                 live
               </a>
             </div>
-            <p className="text-sm sm:text-base text-[#e6f3ff] mb-3">
+            <p className={`text-sm sm:text-base mb-3 transition-colors duration-500 ${
+              isDarkMode ? 'text-[#e6f3ff]' : 'text-gray-700'
+            }`}>
               co-founder, CGO & developer
             </p>
-            <p className="text-sm sm:text-base text-[#b3d9ff] leading-relaxed">
+            <p className={`text-sm sm:text-base leading-relaxed transition-colors duration-500 ${
+              isDarkMode ? 'text-[#b3d9ff]' : 'text-gray-600'
+            }`}>
               ai-powered revision assistant for ib students. learn where you're
               weak, get tailored questions, practice smart.
             </p>
@@ -194,22 +223,32 @@ export default function Home() {
 
           <div className="group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
-              <h3 className="text-xl sm:text-2xl font-medium text-[#ffffff] mb-2">
+              <h3 className={`text-xl sm:text-2xl font-medium mb-2 transition-colors duration-500 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
                 dxb hoops
               </h3>
               <a
                 href="https://dxbhoops.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm sm:text-base text-[#b3d9ff] hover:text-[#e6f3ff] transition-colors self-start sm:self-auto"
+                className={`text-sm sm:text-base transition-colors self-start sm:self-auto ${
+                  isDarkMode 
+                    ? 'text-[#b3d9ff] hover:text-[#e6f3ff]' 
+                    : 'text-blue-600 hover:text-blue-800'
+                }`}
               >
                 live
               </a>
             </div>
-            <p className="text-sm sm:text-base text-[#e6f3ff] mb-3">
+            <p className={`text-sm sm:text-base mb-3 transition-colors duration-500 ${
+              isDarkMode ? 'text-[#e6f3ff]' : 'text-gray-700'
+            }`}>
               founder & developer
             </p>
-            <p className="text-sm sm:text-base text-[#b3d9ff] leading-relaxed">
+            <p className={`text-sm sm:text-base leading-relaxed transition-colors duration-500 ${
+              isDarkMode ? 'text-[#b3d9ff]' : 'text-gray-600'
+            }`}>
               basketball community platform connecting athletes in dubai.
               features player profiles, game scheduling, and community events.
             </p>
@@ -217,17 +256,25 @@ export default function Home() {
 
           <div className="group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
-              <h3 className="text-xl sm:text-2xl font-medium text-[#ffffff] mb-2">
+              <h3 className={`text-xl sm:text-2xl font-medium mb-2 transition-colors duration-500 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
                 paradigm
               </h3>
-              <span className="text-sm sm:text-base text-[#b3d9ff] self-start sm:self-auto">
+              <span className={`text-sm sm:text-base self-start sm:self-auto transition-colors duration-500 ${
+                isDarkMode ? 'text-[#b3d9ff]' : 'text-blue-600'
+              }`}>
                 in development
               </span>
               </div>
-            <p className="text-sm sm:text-base text-[#e6f3ff] mb-3">
+            <p className={`text-sm sm:text-base mb-3 transition-colors duration-500 ${
+              isDarkMode ? 'text-[#e6f3ff]' : 'text-gray-700'
+            }`}>
               ai video analysis platform
             </p>
-            <p className="text-sm sm:text-base text-[#b3d9ff] leading-relaxed">
+            <p className={`text-sm sm:text-base leading-relaxed transition-colors duration-500 ${
+              isDarkMode ? 'text-[#b3d9ff]' : 'text-gray-600'
+            }`}>
               ai-powered video analysis tool for content creators and
               businesses. extract insights, generate summaries, and analyze
               engagement patterns from video content.
@@ -236,22 +283,32 @@ export default function Home() {
 
           <div className="group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
-              <h3 className="text-xl sm:text-2xl font-medium text-[#ffffff] mb-2">
+              <h3 className={`text-xl sm:text-2xl font-medium mb-2 transition-colors duration-500 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
                 time to copy
               </h3>
               <a
                 href="https://timetocopy.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm sm:text-base text-[#b3d9ff] hover:text-[#e6f3ff] transition-colors self-start sm:self-auto"
+                className={`text-sm sm:text-base transition-colors self-start sm:self-auto ${
+                  isDarkMode 
+                    ? 'text-[#b3d9ff] hover:text-[#e6f3ff]' 
+                    : 'text-blue-600 hover:text-blue-800'
+                }`}
               >
                 live
               </a>
               </div>
-            <p className="text-sm sm:text-base text-[#e6f3ff] mb-3">
+            <p className={`text-sm sm:text-base mb-3 transition-colors duration-500 ${
+              isDarkMode ? 'text-[#e6f3ff]' : 'text-gray-700'
+            }`}>
               productivity application
             </p>
-            <p className="text-sm sm:text-base text-[#b3d9ff] leading-relaxed">
+            <p className={`text-sm sm:text-base leading-relaxed transition-colors duration-500 ${
+              isDarkMode ? 'text-[#b3d9ff]' : 'text-gray-600'
+            }`}>
               a sophisticated productivity application that transforms how users
               manage digital content. features include intelligent text
               categorization and cross-device synchronization.
@@ -260,22 +317,32 @@ export default function Home() {
 
           <div className="group">
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
-              <h3 className="text-xl sm:text-2xl font-medium text-[#ffffff] mb-2">
+              <h3 className={`text-xl sm:text-2xl font-medium mb-2 transition-colors duration-500 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
                 domaindle
               </h3>
               <a
                 href="https://domaindle.vercel.app"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm sm:text-base text-[#b3d9ff] hover:text-[#e6f3ff] transition-colors self-start sm:self-auto"
+                className={`text-sm sm:text-base transition-colors self-start sm:self-auto ${
+                  isDarkMode 
+                    ? 'text-[#b3d9ff] hover:text-[#e6f3ff]' 
+                    : 'text-blue-600 hover:text-blue-800'
+                }`}
               >
                 live
               </a>
             </div>
-            <p className="text-sm sm:text-base text-[#e6f3ff] mb-3">
+            <p className={`text-sm sm:text-base mb-3 transition-colors duration-500 ${
+              isDarkMode ? 'text-[#e6f3ff]' : 'text-gray-700'
+            }`}>
               word game hub
             </p>
-            <p className="text-sm sm:text-base text-[#b3d9ff] leading-relaxed">
+            <p className={`text-sm sm:text-base leading-relaxed transition-colors duration-500 ${
+              isDarkMode ? 'text-[#b3d9ff]' : 'text-gray-600'
+            }`}>
               this was literally the first thing i ever made. every morning at
               school, our teacher would put up games like wordle and we'd all
               get stuck trying to find similar games to play. i got tired of the
@@ -289,21 +356,21 @@ export default function Home() {
 
       {/* Skills Section */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 py-16 sm:py-20 relative z-10">
-        <h2 className={`text-lg sm:text-xl font-medium mb-12 sm:mb-16 text-center transition-colors duration-500 ${
+        <h2 className={`text-lg sm:text-xl font-medium mb-8 sm:mb-12 transition-colors duration-500 ${
           isDarkMode ? 'text-white' : 'text-gray-900'
         }`}>
           skills & tech stack
         </h2>
 
-        <div className="space-y-12">
+        <div className="space-y-8 sm:space-y-10">
           {/* Languages */}
-          <div className="text-center">
+          <div>
             <h3 className={`text-sm sm:text-base font-medium mb-6 tracking-wider uppercase transition-colors duration-500 ${
               isDarkMode ? 'text-[#b3d9ff]' : 'text-blue-600'
             }`}>
               languages
             </h3>
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-wrap gap-4">
               {["TypeScript", "JavaScript", "Python", "HTML", "CSS", "SQL"].map(
                 (skill) => (
                   <span
@@ -322,13 +389,13 @@ export default function Home() {
             </div>
 
           {/* Frameworks */}
-          <div className="text-center">
+          <div>
             <h3 className={`text-sm sm:text-base font-medium mb-6 tracking-wider uppercase transition-colors duration-500 ${
               isDarkMode ? 'text-[#b3d9ff]' : 'text-blue-600'
             }`}>
               frameworks
             </h3>
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-wrap gap-4">
               {[
                 "Next.js",
                 "React",
@@ -348,13 +415,13 @@ export default function Home() {
             </div>
 
           {/* Tools */}
-          <div className="text-center">
+          <div>
             <h3 className={`text-sm sm:text-base font-medium mb-6 tracking-wider uppercase transition-colors duration-500 ${
               isDarkMode ? 'text-[#b3d9ff]' : 'text-blue-600'
             }`}>
               tools
             </h3>
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-wrap gap-4">
               {["Supabase", "Vercel", "OpenAI", "Git", "Docker", "Redis"].map(
                 (skill) => (
                   <span
