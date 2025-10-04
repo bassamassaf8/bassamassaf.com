@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import NeonMazeBackground from "./components/NeonMazeBackground";
 import "./globals.css";
 
 const inter = Inter({
@@ -66,8 +65,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
-      <body className={`${inter.variable} font-sans antialiased h-full bg-[#070B16]`}>
-        <NeonMazeBackground />
+      <body className={`${inter.variable} font-sans antialiased h-full`}>
         {children}
       </body>
     </html>

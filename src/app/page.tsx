@@ -10,6 +10,7 @@ import {
   Download,
 } from "lucide-react";
 import { useState } from "react";
+import NeonMazeBackground from "./components/NeonMazeBackground";
 
 export default function Home() {
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -20,6 +21,7 @@ export default function Home() {
         isDarkMode ? "text-white" : "text-gray-900"
       }`}
     >
+      <NeonMazeBackground isDark={isDarkMode} />
       {/* Background moved to NeonMazeBackground in layout */}
 
       {/* Navigation */}

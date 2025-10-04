@@ -13,7 +13,7 @@ type Path = {
   phase: number;
 };
 
-export default function NeonMazeBackground() {
+export default function NeonMazeBackground({ isDark = true }: { isDark?: boolean }) {
   const baseRef = useRef<HTMLCanvasElement | null>(null);
   const animRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -26,13 +26,19 @@ export default function NeonMazeBackground() {
   }, []);
 
   const neonColors = useMemo(
-    () => [
-      "rgba(0, 255, 255, 1)",
-      "rgba(137, 207, 240, 1)",
-      "rgba(120, 0, 255, 1)",
-      "rgba(0, 175, 255, 1)",
-    ],
-    []
+    () =>
+      isDark
+        ? [
+            "rgba(0, 255, 170, 1)", // matrixy cyan-green
+            "rgba(0, 200, 130, 1)",
+            "rgba(80, 255, 200, 1)",
+          ]
+        : [
+            "rgba(59, 130, 246, 1)", // blue hues for light
+            "rgba(99, 102, 241, 1)",
+            "rgba(56, 189, 248, 1)",
+          ],
+    [isDark]
   );
 
   const pathsRef = useRef<Path[]>([]);
@@ -59,7 +65,7 @@ export default function NeonMazeBackground() {
     const rnd = (min: number, max: number) => Math.random() * (max - min) + min;
     const pick = <T,>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
 
-    const count = Math.floor(cols * rows * 0.12) + 16;
+    const count = Math.floor(cols * rows * 0.06) + 10; // sparser, more subtle
     const maxSteps = Math.max(10, Math.floor((cols + rows) * 0.8));
 
     const paths: Path[] = [];
@@ -121,7 +127,7 @@ export default function NeonMazeBackground() {
         points,
         segLens,
         totalLen: total,
-        speed: rnd(40, 95),
+        speed: rnd(22, 45), // slower
         head: Math.random() * total,
         color: pick(neonColors),
         phase: Math.random() * Math.PI * 2,
@@ -135,7 +141,7 @@ export default function NeonMazeBackground() {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     ctx.save();
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "rgba(180, 220, 255, 0.06)";
+    ctx.strokeStyle = isDark ? "rgba(60, 255, 180, 0.05)" : "rgba(60, 100, 200, 0.06)";
     ctx.shadowColor = "transparent";
     ctx.beginPath();
     for (const path of paths) {
@@ -240,19 +246,19 @@ export default function NeonMazeBackground() {
       if (!prefersReducedMotion && !document.hidden) {
         for (const p of paths) {
           p.head = (p.head + p.speed * dt) % p.totalLen;
-          const tailLen = 120;
+          const tailLen = 80; // shorter pulse tail
           const start = p.head - tailLen;
           const end = p.head;
 
-          const beat = 0.6 + 0.4 * Math.max(0, Math.sin(t / 300 + p.phase));
-          const width = 1.2 + 1.8 * beat;
+          const beat = 0.5 + 0.3 * Math.max(0, Math.sin(t / 400 + p.phase));
+          const width = 1 + 1.2 * beat;
 
           ctx.save();
           ctx.lineCap = "round";
           ctx.lineJoin = "round";
           ctx.lineWidth = width;
           ctx.shadowColor = p.color;
-          ctx.shadowBlur = 18 + 22 * beat;
+          ctx.shadowBlur = 8 + 14 * beat; // softer glow
           ctx.strokeStyle = p.color.replace(", 1)", `, ${0.65 + 0.25 * beat})`);
 
           if (start < 0) {
