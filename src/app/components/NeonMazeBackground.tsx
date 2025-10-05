@@ -53,6 +53,9 @@ export default function NeonMazeBackground({
     heroRect?: DOMRect | null
   ): Path[] {
     const margin = Math.max(32, Math.min(w, h) * 0.05);
+    // Responsive scale based on viewport's smaller side
+    const vpMin = Math.min(w, h);
+    const scale = Math.max(0.7, Math.min(1.5, vpMin / 900));
     const gutter = Math.max(16, Math.min(w, h) * 0.02);
     // Reserve a left corridor exclusively for the underline path
     const leftCorridorX2 = margin + Math.max(160, w * 0.22);
@@ -81,7 +84,8 @@ export default function NeonMazeBackground({
 
     // Optional anchored path under the hero name as the 1st path
     if (heroRect) {
-      const step = Math.max(12, Math.min(w, h) / 42);
+      // TUNABLE (responsive): smaller screens use finer steps; larger screens coarser
+      const step = Math.max(10 * scale, Math.min(w, h) / (42 / scale));
       const snap = (v: number, st: number) => Math.round(v / st) * st;
       const underlineY = snap(heroRect.bottom + 16, step);
       const startX = snap(Math.max(margin, heroRect.left) + 2, step);
@@ -97,7 +101,7 @@ export default function NeonMazeBackground({
       points.push({ x, y });
 
       // Continue serpentine primarily downward within the reserved left corridor
-      const segments = 36; // TUNABLE: underline path complexity/length
+      const segments = Math.max(18, Math.round(36 * scale)); // TUNABLE: underline path complexity/length
       let goRight = Math.random() < 0.5;
       for (let s = 0; s < segments; s++) {
         x = goRight
@@ -126,7 +130,8 @@ export default function NeonMazeBackground({
         points,
         segLens,
         totalLen: total,
-        speed: 62, // TUNABLE: underline speed (faster)
+        // TUNABLE (responsive): speed scales mildly with viewport size
+        speed: 62 * (0.9 + 0.5 * (scale - 1)),
         head: Math.min(180, total), // start ahead so it's visible immediately
         color: neonColors[1], // pink underline by default
         phase: Math.random() * Math.PI * 2,
@@ -135,17 +140,16 @@ export default function NeonMazeBackground({
 
     regions.forEach((r, idx) => {
       const snap = (v: number, step: number) => Math.round(v / step) * step;
-      // TUNABLE: decrease step for tighter, more frequent turns; increase for smoother, fewer turns
-      // Smaller step + more segments = longer paths with more bends
-      const step = Math.max(10, Math.min(r.x2 - r.x1, r.y2 - r.y1) / 22);
+      // TUNABLE (responsive): step and segment count scale with viewport
+      const step = Math.max(8 * scale, Math.min(r.x2 - r.x1, r.y2 - r.y1) / (22 / scale));
 
       const points: Point[] = [];
       let x = snap(r.x1 + step * 0.5, step);
       let y = snap((r.y1 + r.y2) / 2, step);
       points.push({ x, y });
 
-      // TUNABLE: increase segments to turn more often and lengthen the route
-      const segments = 32;
+      // TUNABLE (responsive): more segments on larger screens
+      const segments = Math.max(18, Math.round(32 * scale));
       let horizRight = idx % 2 === 0;
       let vertDown = idx % 2 !== 0;
 
@@ -174,8 +178,8 @@ export default function NeonMazeBackground({
         points,
         segLens,
         totalLen: total,
-        // TUNABLE: increase speed for faster movement (pixels per second)
-        speed: 38 + idx * 4.5,
+        // TUNABLE (responsive): modest speed scaling
+        speed: (38 + idx * 4.5) * (0.9 + 0.5 * (scale - 1)),
         head: Math.random() * total,
         // Use forced region color to guarantee one blue & one pink on each side
         color: regionColors[idx % regionColors.length],
@@ -485,13 +489,14 @@ export default function NeonMazeBackground({
       if (!prefersReducedMotion && !document.hidden) {
         for (const p of paths) {
           p.head = (p.head + p.speed * dt) % p.totalLen;
-          // TUNABLE: tailLen controls the visible length of each neon pulse
-          const tailLen = 340; // longer visible neon segment
+          // TUNABLE (responsive): tailLen controls the visible length of each neon pulse
+          const tailLen = Math.max(180, Math.min(520, 340 * (0.9 + 0.6 * (scale - 1))));
           const start = p.head - tailLen;
           const end = p.head;
 
           const beat = 0.45 + 0.25 * Math.max(0, Math.sin(t / 700 + p.phase));
-          const width = 1.0 + 0.6 * beat;
+          // TUNABLE (responsive): stroke width scales mildly with viewport size
+          const width = (1.0 + 0.6 * beat) * (0.9 + 0.6 * (scale - 1));
 
           // Frosted/glow effect: draw blurred passes behind, then crisp core
           // TUNABLE: adjust blur and alpha to increase/decrease frosted look
@@ -552,7 +557,6 @@ export default function NeonMazeBackground({
           }
 
           ctx.restore();
-
         }
       }
 
