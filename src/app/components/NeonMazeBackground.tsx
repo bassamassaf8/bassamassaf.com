@@ -44,6 +44,7 @@ export default function NeonMazeBackground({
   const pathsRef = useRef<Path[]>([]);
   const staticSegmentsRef = useRef<{ a: Point; b: Point }[]>([]);
   const lastSizeRef = useRef<{ w: number; h: number }>({ w: 0, h: 0 });
+  const oneShotRef = useRef<Path | null>(null);
   // Blur overlay removed
 
   // Creative, spaced orthogonal paths in separated regions (no collisions)
@@ -58,30 +59,16 @@ export default function NeonMazeBackground({
     const scale = Math.max(0.7, Math.min(1.5, vpMin / 900));
     const gutter = Math.max(16, Math.min(w, h) * 0.02);
     const rnd = (min: number, max: number) => Math.random() * (max - min) + min;
-    // Allow collisions: create 4 paths all sharing the same spanning region
-    const topBand = Math.max(margin, h * 0.06);
-    const bottomBand = Math.min(h - margin, h * 0.94);
-    const regions: { x1: number; y1: number; x2: number; y2: number }[] = [];
-    for (let i = 0; i < 4; i++) {
-      // Small per-line jitter so they don't start at exactly same coordinates
-      const xJ = rnd(0, Math.min(48, (w - 2 * margin) * 0.05));
-      const yJ = rnd(0, Math.min(48, (bottomBand - topBand) * 0.05));
-      regions.push({
-        x1: margin + xJ,
-        y1: topBand + yJ,
-        x2: w - margin - xJ,
-        y2: bottomBand - yJ,
-      });
-    }
-
-    // Force color mixing per side: left (idx 0,2) => [pink, blue], right (idx 1,3) => [blue, pink]
-    const regionColors = [
-      neonColors[0], // band 1 blue
-      neonColors[1], // band 2 pink
-      neonColors[0], // band 3 blue
-      neonColors[1], // band 4 pink
-      neonColors[0], // band 5 blue
+    // Define regions for 4 paths starting at corners with inward depth
+    const regions: { x1: number; y1: number; x2: number; y2: number; start: Point; fromLeft: boolean; fromTop: boolean }[] = [
+      { x1: margin, y1: margin, x2: w - margin, y2: h - margin, start: { x: margin, y: margin }, fromLeft: true, fromTop: true },
+      { x1: margin, y1: margin, x2: w - margin, y2: h - margin, start: { x: w - margin, y: margin }, fromLeft: false, fromTop: true },
+      { x1: margin, y1: margin, x2: w - margin, y2: h - margin, start: { x: w - margin, y: h - margin }, fromLeft: false, fromTop: false },
+      { x1: margin, y1: margin, x2: w - margin, y2: h - margin, start: { x: margin, y: h - margin }, fromLeft: true, fromTop: false },
     ];
+
+    // Alternate colors
+    const regionColors = [neonColors[0], neonColors[1], neonColors[0], neonColors[1]];
 
     const paths: Path[] = [];
 
@@ -150,19 +137,24 @@ export default function NeonMazeBackground({
       );
 
       const points: Point[] = [];
-      let x = snap(r.x1 + step * 0.5, step);
-      let y = snap(r.y1 + step * 0.5, step);
+      let x = snap(r.start.x, step);
+      let y = snap(r.start.y, step);
       points.push({ x, y });
 
       // TUNABLE (responsive): more segments on larger screens
-      const segments = Math.max(18, Math.round(32 * scale));
-      let horizRight = Math.random() < 0.5;
-      let vertDown = Math.random() < 0.5;
+      const segments = Math.max(16, Math.round(28 * scale));
+      let horizRight = r.fromLeft;
+      let vertDown = r.fromTop;
 
       for (let s = 0; s < segments; s++) {
-        x = horizRight ? snap(r.x2 - step * 0.5, step) : snap(r.x1 + step * 0.5, step);
+        const inset = Math.min(s * step * 0.5, Math.min(w, h) * 0.12);
+        const leftBound = r.x1 + inset;
+        const rightBound = r.x2 - inset;
+        x = horizRight ? snap(rightBound, step) : snap(leftBound, step);
         points.push({ x, y });
-        const boundTarget = vertDown ? r.y2 - step * 0.5 : r.y1 + step * 0.5;
+        const topBound = r.y1 + inset;
+        const botBound = r.y2 - inset;
+        const boundTarget = vertDown ? botBound : topBound;
         y = snap(boundTarget, step);
         points.push({ x, y });
         horizRight = !horizRight;
@@ -185,8 +177,7 @@ export default function NeonMazeBackground({
         // TUNABLE (responsive): modest speed scaling
         speed: (38 + idx * 4.5) * (0.9 + 0.5 * (scale - 1)),
         head: Math.random() * total,
-        // Use forced region color to guarantee one blue & one pink on each side
-        color: regionColors[idx % regionColors.length],
+        color: regionColors[idx % 2],
         phase: Math.random() * Math.PI * 2,
       });
     });
@@ -493,6 +484,30 @@ export default function NeonMazeBackground({
       if (!prefersReducedMotion && !document.hidden) {
         const vpMin = Math.min(anim.clientWidth, anim.clientHeight);
         const scaleView = Math.max(0.7, Math.min(1.5, vpMin / 900));
+        // draw optional one-shot sweep first
+        if (oneShotRef.current) {
+          const p = oneShotRef.current;
+          p.head += p.speed * dt;
+          const tailLen = Math.min(240, p.totalLen * 0.6);
+          const start = Math.max(0, p.head - tailLen);
+          const end = Math.min(p.head, p.totalLen);
+          const beat = 0.4;
+          const width = (1.2 + 0.6 * beat) * (0.9 + 0.6 * (scaleView - 1));
+          ctx.save();
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          ctx.lineWidth = width;
+          ctx.filter = "none";
+          ctx.globalAlpha = 0.9;
+          ctx.shadowColor = p.color;
+          ctx.shadowBlur = 10;
+          ctx.strokeStyle = p.color.replace(", 1)", `, 0.9)`);
+          strokePolylinePortion(ctx, p.points, p.segLens, start, end);
+          ctx.restore();
+          if (p.head > p.totalLen + tailLen) {
+            oneShotRef.current = null; // finished
+          }
+        }
         for (const p of paths) {
           p.head = (p.head + p.speed * dt) % p.totalLen;
           // TUNABLE (responsive): tailLen controls the visible length of each neon pulse
