@@ -122,16 +122,23 @@ export default function NeonMazeBackground({
       // TUNABLE (responsive): smaller screens use finer steps; larger screens coarser
       const step = Math.max(10 * scale, Math.min(w, h) / (42 / scale));
       const snap = (v: number, st: number) => Math.round(v / st) * st;
-      const sweepY = snap(heroRect.top + heroRect.height * 0.5, step);
-      const p0 = { x: margin, y: sweepY };
-      const p1 = { x: w - margin, y: sweepY };
+      const sweepY = snap(
+        heroRect.bottom + Math.max(10, Math.min(24, h * 0.025)),
+        step
+      );
+      const p0 = { x: snap(Math.max(margin, heroRect.left), step), y: sweepY };
+      const p1 = {
+        x: snap(Math.min(w - margin, heroRect.right), step),
+        y: sweepY,
+      };
       const total = Math.hypot(p1.x - p0.x, p1.y - p0.y);
       const segLens = [0, total];
       oneShotRef.current = {
         points: [p0, p1],
         segLens,
         totalLen: total,
-        speed: Math.max(240, w * 0.6),
+        // Make underline slower
+        speed: Math.max(40, w * 0.08),
         head: 0,
         color: neonColors[0],
         phase: 0,
@@ -157,7 +164,8 @@ export default function NeonMazeBackground({
       let vertDown = r.fromTop;
 
       for (let s = 0; s < segments; s++) {
-        const inset = Math.min(s * step * 0.5, Math.min(w, h) * 0.12);
+        const laneInset = [0.02, 0.055, 0.095, 0.14][idx] * Math.min(w, h);
+        const inset = Math.min(laneInset, Math.min(w, h) * 0.2);
         const leftBound = r.x1 + inset;
         const rightBound = r.x2 - inset;
         x = horizRight ? snap(rightBound, step) : snap(leftBound, step);
@@ -609,9 +617,7 @@ export default function NeonMazeBackground({
   return (
     <div
       aria-hidden
-      className={`pointer-events-none fixed inset-0 -z-10 ${
-        isDark ? "bg-black" : "bg-transparent"
-      }`}
+      className="pointer-events-none fixed inset-0 z-0 bg-transparent"
     >
       <canvas ref={baseRef} className="absolute inset-0 h-full w-full" />
       <canvas ref={animRef} className="absolute inset-0 h-full w-full" />

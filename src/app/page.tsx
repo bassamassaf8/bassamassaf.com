@@ -18,7 +18,7 @@ export default function Home() {
   return (
     <div
       className={`min-h-screen relative overflow-hidden transition-colors duration-150 ${
-        isDarkMode ? "text-white" : "text-gray-900"
+        isDarkMode ? "bg-black text-white" : "bg-white text-gray-900"
       }`}
     >
       <NeonMazeBackground isDark={isDarkMode} />
