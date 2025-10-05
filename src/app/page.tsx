@@ -13,7 +13,7 @@ import { useState } from "react";
 import NeonMazeBackground from "./components/NeonMazeBackground";
 
 export default function Home() {
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   return (
     <div
@@ -65,7 +65,7 @@ export default function Home() {
               <a
                 href="#cv"
                 className={`hover:opacity-80 transition-all duration-300 ${
-                  isDarkMode ? "hover:text-[#e6f3ff]" : "hover:text-gray-900"
+                  isDarkMode ? "hover:text-[#e6f3ff]" : "hover:text-blue-900"
                 }`}
               >
                 cv
@@ -111,8 +111,8 @@ export default function Home() {
             developer • entrepreneur • student
           </p>
           <div
-            className={`flex items-center justify-center gap-6 sm:gap-8 text-sm sm:text-base transition-colors duration-500 ${
-              isDarkMode ? "text-[#b3d9ff]" : "text-gray-600"
+            className={`flex items-center justify-center gap-6 sm:gap-8 text-sm sm:text-base transition-colors duration-300 ${
+              isDarkMode ? "text-[#b3d9ff]" : "text-blue-700"
             }`}
           >
             <a
@@ -120,7 +120,7 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               className={`flex items-center gap-2 transition-all duration-300 hover:scale-105 ${
-                isDarkMode ? "hover:text-[#e6f3ff]" : "hover:text-gray-900"
+                isDarkMode ? "hover:text-[#e6f3ff]" : "hover:text-blue-900"
               }`}
             >
               <Github size={12} />
@@ -129,7 +129,7 @@ export default function Home() {
             <a
               href="mailto:bassamassaf32@gmail.com"
               className={`flex items-center gap-2 transition-all duration-300 hover:scale-105 ${
-                isDarkMode ? "hover:text-[#e6f3ff]" : "hover:text-gray-900"
+                isDarkMode ? "hover:text-[#e6f3ff]" : "hover:text-blue-900"
               }`}
             >
               <Mail size={12} />
@@ -140,7 +140,7 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               className={`flex items-center gap-2 transition-all duration-300 hover:scale-105 ${
-                isDarkMode ? "hover:text-[#e6f3ff]" : "hover:text-gray-900"
+                isDarkMode ? "hover:text-[#e6f3ff]" : "hover:text-blue-900"
               }`}
             >
               <Linkedin size={12} />
@@ -173,18 +173,30 @@ export default function Home() {
               >
                 examvault
               </h3>
-              <a
-                href="https://examvault.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`text-sm sm:text-base transition-colors self-start sm:self-auto ${
-                  isDarkMode
-                    ? "text-[#b3d9ff] hover:text-[#e6f3ff]"
-                    : "text-blue-600 hover:text-blue-800"
-                }`}
-              >
-                live
-              </a>
+              <div className="flex items-center gap-4">
+                <a
+                  href="https://examvault.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`text-sm sm:text-base px-3 py-1 rounded-full border transition-colors ${
+                    isDarkMode
+                      ? "text-[#b3d9ff] border-[#66b3ff]/40 hover:border-[#e6f3ff] hover:text-[#e6f3ff]"
+                      : "text-blue-700 border-blue-300 hover:border-blue-800 hover:text-blue-900"
+                  }`}
+                >
+                  live ↗
+                </a>
+                <button
+                  className={`text-sm sm:text-base px-3 py-1 rounded-full border opacity-70 cursor-not-allowed ${
+                    isDarkMode
+                      ? "text-[#b3d9ff] border-white/20"
+                      : "text-gray-600 border-gray-300"
+                  }`}
+                  aria-disabled="true"
+                >
+                  read more
+                </button>
+              </div>
             </div>
             <p
               className={`text-sm sm:text-base mb-3 transition-colors duration-500 ${
@@ -212,18 +224,30 @@ export default function Home() {
               >
                 dxb hoops
               </h3>
-              <a
-                href="https://dxbhoops.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`text-sm sm:text-base transition-colors self-start sm:self-auto ${
-                  isDarkMode
-                    ? "text-[#b3d9ff] hover:text-[#e6f3ff]"
-                    : "text-blue-600 hover:text-blue-800"
-                }`}
-              >
-                live
-              </a>
+              <div className="flex items-center gap-4">
+                <a
+                  href="https://dxbhoops.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`text-sm sm:text-base px-3 py-1 rounded-full border transition-colors ${
+                    isDarkMode
+                      ? "text-[#b3d9ff] border-[#66b3ff]/40 hover:border-[#e6f3ff] hover:text-[#e6f3ff]"
+                      : "text-blue-700 border-blue-300 hover:border-blue-800 hover:text-blue-900"
+                  }`}
+                >
+                  live ↗
+                </a>
+                <button
+                  className={`text-sm sm:text-base px-3 py-1 rounded-full border opacity-70 cursor-not-allowed ${
+                    isDarkMode
+                      ? "text-[#b3d9ff] border-white/20"
+                      : "text-gray-600 border-gray-300"
+                  }`}
+                  aria-disabled="true"
+                >
+                  read more
+                </button>
+              </div>
             </div>
             <p
               className={`text-sm sm:text-base mb-3 transition-colors duration-500 ${
@@ -251,13 +275,25 @@ export default function Home() {
               >
                 paradigm
               </h3>
-              <span
-                className={`text-sm sm:text-base self-start sm:self-auto transition-colors duration-500 ${
-                  isDarkMode ? "text-[#b3d9ff]" : "text-blue-600"
-                }`}
-              >
-                in development
-              </span>
+              <div className="flex items-center gap-4">
+                <span
+                  className={`text-sm sm:text-base self-start sm:self-auto transition-colors duration-500 ${
+                    isDarkMode ? "text-[#b3d9ff]" : "text-blue-600"
+                  }`}
+                >
+                  in development
+                </span>
+                <button
+                  className={`text-sm sm:text-base px-3 py-1 rounded-full border opacity-70 cursor-not-allowed ${
+                    isDarkMode
+                      ? "text-[#b3d9ff] border-white/20"
+                      : "text-gray-600 border-gray-300"
+                  }`}
+                  aria-disabled="true"
+                >
+                  read more
+                </button>
+              </div>
             </div>
             <p
               className={`text-sm sm:text-base mb-3 transition-colors duration-500 ${
@@ -286,18 +322,30 @@ export default function Home() {
               >
                 time to copy
               </h3>
-              <a
-                href="https://timetocopy.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`text-sm sm:text-base transition-colors self-start sm:self-auto ${
-                  isDarkMode
-                    ? "text-[#b3d9ff] hover:text-[#e6f3ff]"
-                    : "text-blue-600 hover:text-blue-800"
-                }`}
-              >
-                live
-              </a>
+              <div className="flex items-center gap-4">
+                <a
+                  href="https://timetocopy.vercel.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`text-sm sm:text-base px-3 py-1 rounded-full border transition-colors ${
+                    isDarkMode
+                      ? "text-[#b3d9ff] border-[#66b3ff]/40 hover:border-[#e6f3ff] hover:text-[#e6f3ff]"
+                      : "text-blue-700 border-blue-300 hover:border-blue-800 hover:text-blue-900"
+                  }`}
+                >
+                  live ↗
+                </a>
+                <button
+                  className={`text-sm sm:text-base px-3 py-1 rounded-full border opacity-70 cursor-not-allowed ${
+                    isDarkMode
+                      ? "text-[#b3d9ff] border-white/20"
+                      : "text-gray-600 border-gray-300"
+                  }`}
+                  aria-disabled="true"
+                >
+                  read more
+                </button>
+              </div>
             </div>
             <p
               className={`text-sm sm:text-base mb-3 transition-colors duration-500 ${
@@ -326,18 +374,30 @@ export default function Home() {
               >
                 domaindle
               </h3>
-              <a
-                href="https://domaindle.vercel.app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`text-sm sm:text-base transition-colors self-start sm:self-auto ${
-                  isDarkMode
-                    ? "text-[#b3d9ff] hover:text-[#e6f3ff]"
-                    : "text-blue-600 hover:text-blue-800"
-                }`}
-              >
-                live
-              </a>
+              <div className="flex items-center gap-4">
+                <a
+                  href="https://domaindle.vercel.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`text-sm sm:text-base px-3 py-1 rounded-full border transition-colors ${
+                    isDarkMode
+                      ? "text-[#b3d9ff] border-[#66b3ff]/40 hover:border-[#e6f3ff] hover:text-[#e6f3ff]"
+                      : "text-blue-700 border-blue-300 hover:border-blue-800 hover:text-blue-900"
+                  }`}
+                >
+                  live ↗
+                </a>
+                <button
+                  className={`text-sm sm:text-base px-3 py-1 rounded-full border opacity-70 cursor-not-allowed ${
+                    isDarkMode
+                      ? "text-[#b3d9ff] border-white/20"
+                      : "text-gray-600 border-gray-300"
+                  }`}
+                  aria-disabled="true"
+                >
+                  read more
+                </button>
+              </div>
             </div>
             <p
               className={`text-sm sm:text-base mb-3 transition-colors duration-500 ${
@@ -361,100 +421,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Skills Section */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-16 sm:py-20 relative z-10">
-        <h2
-          className={`text-lg sm:text-xl font-medium mb-8 sm:mb-12 transition-colors duration-500 ${
-            isDarkMode ? "text-white" : "text-gray-900"
-          }`}
-        >
-          skills & tech stack
-        </h2>
-
-        <div className="space-y-8 sm:space-y-10">
-          {/* Languages */}
-          <div>
-            <h3
-              className={`text-sm sm:text-base font-medium mb-6 tracking-wider uppercase transition-colors duration-500 ${
-                isDarkMode ? "text-[#b3d9ff]" : "text-blue-600"
-              }`}
-            >
-              languages
-            </h3>
-            <div className="flex flex-wrap gap-4">
-              {["TypeScript", "JavaScript", "Python", "HTML", "CSS", "SQL"].map(
-                (skill) => (
-                  <span
-                    key={skill}
-                    className={`px-4 py-2 bg-transparent rounded-full text-sm font-medium border transition-all duration-300 ${
-                      isDarkMode
-                        ? "text-[#e6f3ff] border-[#66b3ff]/40 hover:border-[#66b3ff] hover:bg-[#66b3ff]/10"
-                        : "text-gray-700 border-blue-300 hover:border-blue-500 hover:bg-blue-50"
-                    }`}
-                  >
-                    {skill}
-                  </span>
-                )
-              )}
-            </div>
-          </div>
-
-          {/* Frameworks */}
-          <div>
-            <h3
-              className={`text-sm sm:text-base font-medium mb-6 tracking-wider uppercase transition-colors duration-500 ${
-                isDarkMode ? "text-[#b3d9ff]" : "text-blue-600"
-              }`}
-            >
-              frameworks
-            </h3>
-            <div className="flex flex-wrap gap-4">
-              {[
-                "Next.js",
-                "React",
-                "FastAPI",
-                "TailwindCSS",
-                "Framer Motion",
-                "Prisma",
-              ].map((skill) => (
-                <span
-                  key={skill}
-                  className="px-4 py-2 bg-transparent text-[#e6f3ff] rounded-full text-sm font-medium border border-[#66b3ff]/40 hover:border-[#66b3ff] hover:bg-[#66b3ff]/10 transition-all duration-300"
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* Tools */}
-          <div>
-            <h3
-              className={`text-sm sm:text-base font-medium mb-6 tracking-wider uppercase transition-colors duration-500 ${
-                isDarkMode ? "text-[#b3d9ff]" : "text-blue-600"
-              }`}
-            >
-              tools
-            </h3>
-            <div className="flex flex-wrap gap-4">
-              {["Supabase", "Vercel", "OpenAI", "Git", "Docker", "Redis"].map(
-                (skill) => (
-                  <span
-                    key={skill}
-                    className={`px-4 py-2 bg-transparent rounded-full text-sm font-medium border transition-all duration-300 ${
-                      isDarkMode
-                        ? "text-[#e6f3ff] border-[#66b3ff]/40 hover:border-[#66b3ff] hover:bg-[#66b3ff]/10"
-                        : "text-gray-700 border-blue-300 hover:border-blue-500 hover:bg-blue-50"
-                    }`}
-                  >
-                    {skill}
-                  </span>
-                )
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Skills Section - temporarily hidden */}
+      {false && (
+        <section className="max-w-3xl mx-auto px-4 sm:px-6 py-16 sm:py-20 relative z-10">
+          ...
+        </section>
+      )}
 
       {/* About Section */}
       <section
@@ -524,7 +496,7 @@ export default function Home() {
               className={`flex items-center gap-2 text-sm sm:text-base transition-colors ${
                 isDarkMode
                   ? "text-[#b3d9ff] hover:text-[#e6f3ff]"
-                  : "text-blue-600 hover:text-blue-800"
+                  : "text-blue-700 hover:text-blue-900"
               }`}
             >
               <Mail size={12} />
@@ -537,7 +509,7 @@ export default function Home() {
               className={`flex items-center gap-2 text-sm sm:text-base transition-colors ${
                 isDarkMode
                   ? "text-[#b3d9ff] hover:text-[#e6f3ff]"
-                  : "text-blue-600 hover:text-blue-800"
+                  : "text-blue-700 hover:text-blue-900"
               }`}
             >
               <Github size={12} />
@@ -550,7 +522,7 @@ export default function Home() {
               className={`flex items-center gap-2 text-sm sm:text-base transition-colors ${
                 isDarkMode
                   ? "text-[#b3d9ff] hover:text-[#e6f3ff]"
-                  : "text-blue-600 hover:text-blue-800"
+                  : "text-blue-700 hover:text-blue-900"
               }`}
             >
               <Linkedin size={12} />
