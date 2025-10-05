@@ -49,25 +49,35 @@ export default function NeonMazeBackground({
   function buildFixedPaths(w: number, h: number): Path[] {
     const margin = Math.max(32, Math.min(w, h) * 0.05);
     const regions: { x1: number; y1: number; x2: number; y2: number }[] = [
-      { x1: margin, y1: margin, x2: w * 0.44, y2: h * 0.30 }, // top-left
+      { x1: margin, y1: margin, x2: w * 0.44, y2: h * 0.3 }, // top-left
       { x1: w * 0.56, y1: h * 0.22, x2: w - margin, y2: h * 0.58 }, // upper-right
       { x1: margin, y1: h * 0.62, x2: w * 0.48, y2: h - margin }, // bottom-left
       { x1: w * 0.52, y1: h * 0.66, x2: w - margin, y2: h - margin }, // bottom-right (new 4th line)
+    ];
+
+    // Force color mixing per side: left (idx 0,2) => [pink, blue], right (idx 1,3) => [blue, pink]
+    const regionColors = [
+      neonColors[1], // idx 0 -> pink (left)
+      neonColors[0], // idx 1 -> blue (right)
+      neonColors[0], // idx 2 -> blue (left)
+      neonColors[1], // idx 3 -> pink (right)
     ];
 
     const paths: Path[] = [];
 
     regions.forEach((r, idx) => {
       const snap = (v: number, step: number) => Math.round(v / step) * step;
-      // smaller step and more segments -> longer serpentine lines
-      const step = Math.max(24, Math.min(r.x2 - r.x1, r.y2 - r.y1) / 10);
+      // TUNABLE: decrease step for tighter, more frequent turns; increase for smoother, fewer turns
+      // Smaller step + more segments = longer paths with more bends
+      const step = Math.max(20, Math.min(r.x2 - r.x1, r.y2 - r.y1) / 12);
 
       const points: Point[] = [];
       let x = snap(r.x1 + step * 0.5, step);
       let y = snap((r.y1 + r.y2) / 2, step);
       points.push({ x, y });
 
-      const segments = 10;
+      // TUNABLE: increase segments to turn more often and lengthen the route
+      const segments = 14;
       let horizRight = idx % 2 === 0;
       let vertDown = idx % 2 !== 0;
 
@@ -96,10 +106,11 @@ export default function NeonMazeBackground({
         points,
         segLens,
         totalLen: total,
-        // faster speeds for more lively motion
-        speed: 16 + idx * 2.5,
+        // TUNABLE: increase speed for faster movement (pixels per second)
+        speed: 22 + idx * 3,
         head: Math.random() * total,
-        color: neonColors[idx % neonColors.length],
+        // Use forced region color to guarantee one blue & one pink on each side
+        color: regionColors[idx % regionColors.length],
         phase: Math.random() * Math.PI * 2,
       });
     });
@@ -392,7 +403,8 @@ export default function NeonMazeBackground({
       if (!prefersReducedMotion && !document.hidden) {
         for (const p of paths) {
           p.head = (p.head + p.speed * dt) % p.totalLen;
-          const tailLen = 120; // longer visible neon segment
+          // TUNABLE: tailLen controls the visible length of each neon pulse
+          const tailLen = 160; // longer visible neon segment
           const start = p.head - tailLen;
           const end = p.head;
 
@@ -439,7 +451,7 @@ export default function NeonMazeBackground({
     <div
       aria-hidden
       className={`pointer-events-none fixed inset-0 -z-10 ${
-        isDark ? "bg-[#070B16]" : "bg-transparent"
+        isDark ? "bg-black" : "bg-transparent"
       }`}
     >
       <canvas ref={baseRef} className="absolute inset-0 h-full w-full" />
