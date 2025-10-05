@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 type Point = { x: number; y: number };
 type Path = {
@@ -34,8 +34,8 @@ export default function NeonMazeBackground({
   const neonColors = useMemo(
     () => [
       "rgba(0, 170, 255, 1)", // electric blue
-      //   "rgba(0, 200, 255, 1)", // cyan
-      //   "rgba(90, 120, 255, 1)", // bluish purple
+        "rgba(0, 200, 255, 1)", // cyan
+        "rgba(90, 120, 255, 1)", // bluish purple
       "rgba(255, 60, 200, 1)", // neon pink
     ],
     []
@@ -58,39 +58,19 @@ export default function NeonMazeBackground({
     const gutter = Math.max(16, Math.min(w, h) * 0.02);
     // Reserve a left corridor exclusively for the underline path
     const leftCorridorX2 = margin + Math.max(160, w * 0.22);
-    // Five non-overlapping horizontal bands kept near the top so they follow while scrolling
-    const regions: { x1: number; y1: number; x2: number; y2: number }[] = [
-      {
+    // Five non-overlapping horizontal bands spanning most of the viewport height
+    const topBand = h * 0.12;
+    const bottomBand = h * 0.88;
+    const bandH = (bottomBand - topBand) / 5;
+    const regions: { x1: number; y1: number; x2: number; y2: number }[] = Array.from(
+      { length: 5 },
+      (_, i) => ({
         x1: leftCorridorX2 + gutter,
-        y1: h * 0.12,
+        y1: topBand + bandH * i,
         x2: w - margin,
-        y2: h * 0.2,
-      },
-      {
-        x1: leftCorridorX2 + gutter,
-        y1: h * 0.22,
-        x2: w - margin,
-        y2: h * 0.3,
-      },
-      {
-        x1: leftCorridorX2 + gutter,
-        y1: h * 0.30,
-        x2: w - margin,
-        y2: h * 0.38,
-      },
-      {
-        x1: leftCorridorX2 + gutter,
-        y1: h * 0.38,
-        x2: w - margin,
-        y2: h * 0.46,
-      },
-      {
-        x1: leftCorridorX2 + gutter,
-        y1: h * 0.46,
-        x2: w - margin,
-        y2: h * 0.54,
-      },
-    ];
+        y2: topBand + bandH * (i + 1) - bandH * 0.15, // slight gap to avoid touching
+      })
+    );
 
     // Force color mixing per side: left (idx 0,2) => [pink, blue], right (idx 1,3) => [blue, pink]
     const regionColors = [
@@ -115,9 +95,9 @@ export default function NeonMazeBackground({
       points.push({ x: startX, y: underlineY });
       points.push({ x: endX, y: underlineY }); // underline segment
 
-      // drop down first, but keep underline within the top corridor
+      // drop down first, keep underline within the left corridor near hero
       let x = endX;
-      let y = snap(Math.min(h * 0.20, underlineY + step * 3), step);
+      let y = snap(Math.min(h * 0.24, underlineY + step * 3), step);
       points.push({ x, y });
 
       // Continue serpentine primarily downward within the reserved left corridor
@@ -128,8 +108,8 @@ export default function NeonMazeBackground({
           ? snap(leftCorridorX2 - step * 0.5, step)
           : snap(margin + step * 0.5, step);
         points.push({ x, y });
-        const downStride = 0.8 + Math.random() * 0.8; // small movement to keep near top
-        y = snap(Math.min(h * 0.22, y + step * downStride), step);
+        const downStride = 1.0 + Math.random() * 1.2;
+        y = snap(Math.min(h * 0.30, y + step * downStride), step);
         points.push({ x, y });
         goRight = !goRight;
       }
@@ -454,6 +434,8 @@ export default function NeonMazeBackground({
 
     const base = baseRef.current;
     const anim = animRef.current;
+    const root = base.parentElement as HTMLDivElement | null;
+    let fade = 1; // 1 at top of page, fades to 0 after first screen
 
     const handleResize = () => {
       fitCanvas(base);
@@ -494,6 +476,14 @@ export default function NeonMazeBackground({
 
     handleResize();
     window.addEventListener("resize", handleResize);
+    const onScroll = () => {
+      const y = window.scrollY || 0;
+      const vh = window.innerHeight || 1;
+      // fade out from 0 to 1vh; clamp
+      fade = Math.max(0, Math.min(1, 1 - y / vh));
+      if (root) root.style.opacity = String(0.35 + fade * 0.65); // keep slight presence
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
 
     let last = performance.now();
 
@@ -635,6 +625,7 @@ export default function NeonMazeBackground({
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", onScroll as any);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [prefersReducedMotion]);
