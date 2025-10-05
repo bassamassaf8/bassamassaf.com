@@ -44,11 +44,7 @@ export default function NeonMazeBackground({
   const pathsRef = useRef<Path[]>([]);
   const staticSegmentsRef = useRef<{ a: Point; b: Point }[]>([]);
   const lastSizeRef = useRef<{ w: number; h: number }>({ w: 0, h: 0 });
-  const blurOverlayRef = useRef<HTMLDivElement | null>(null);
-  const maskCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const lastMaskUpdateRef = useRef<number>(0);
-  const maskScaleRef = useRef<number>(0.5);
-  const maskUrlRef = useRef<string | null>(null);
+  // Blur overlay removed
 
   // Creative, spaced orthogonal paths in separated regions (no collisions)
   function buildFixedPaths(
@@ -64,15 +60,13 @@ export default function NeonMazeBackground({
     const topBand = Math.max(margin, h * 0.06);
     const bottomBand = Math.min(h - margin, h * 0.94);
     const bandH = (bottomBand - topBand) / 5;
-    const regions: { x1: number; y1: number; x2: number; y2: number }[] = Array.from(
-      { length: 5 },
-      (_, i) => ({
+    const regions: { x1: number; y1: number; x2: number; y2: number }[] =
+      Array.from({ length: 5 }, (_, i) => ({
         x1: leftCorridorX2 + gutter,
         y1: topBand + bandH * i,
         x2: w - margin,
         y2: topBand + bandH * (i + 1) - bandH * 0.12,
-      })
-    );
+      }));
 
     // Force color mixing per side: left (idx 0,2) => [pink, blue], right (idx 1,3) => [blue, pink]
     const regionColors = [
@@ -445,19 +439,7 @@ export default function NeonMazeBackground({
       fitCanvas(base);
       fitCanvas(anim);
 
-      if (!maskCanvasRef.current) {
-        maskCanvasRef.current = document.createElement("canvas");
-      }
-      const scale = maskScaleRef.current; // render mask at half-res for speed
-      const mw = Math.max(1, Math.floor(base.clientWidth * scale));
-      const mh = Math.max(1, Math.floor(base.clientHeight * scale));
-      if (
-        maskCanvasRef.current.width !== mw ||
-        maskCanvasRef.current.height !== mh
-      ) {
-        maskCanvasRef.current.width = mw;
-        maskCanvasRef.current.height = mh;
-      }
+      // no mask/blur canvas anymore
 
       const baseCtx = base.getContext("2d")!;
       const animCtx = anim.getContext("2d")!;
@@ -487,15 +469,6 @@ export default function NeonMazeBackground({
       const vh = window.innerHeight || 1;
       const fade = Math.max(0, Math.min(1, 1 - y / vh));
       if (root) root.style.opacity = String(fade);
-      if (blurOverlayRef.current) {
-        // keep a subtle frost even as fading
-        const blurPx = 8 + 6 * fade; // 14px at top → 8px at bottom of first screen
-        blurOverlayRef.current.style.backdropFilter = `blur(${blurPx}px)`;
-        (
-          blurOverlayRef.current.style as any
-        ).WebkitBackdropFilter = `blur(${blurPx}px)`;
-        blurOverlayRef.current.style.opacity = String(fade);
-      }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
 
@@ -503,23 +476,11 @@ export default function NeonMazeBackground({
 
     const loop = (t: number) => {
       const ctx = anim.getContext("2d")!;
-      const mctx = maskCanvasRef.current?.getContext("2d") || null;
       const paths = pathsRef.current;
       const dt = Math.min(0.05, (t - last) / 1000);
       last = t;
 
       ctx.clearRect(0, 0, anim.width, anim.height);
-      if (mctx && maskCanvasRef.current) {
-        mctx.setTransform(1, 0, 0, 1, 0, 0);
-        mctx.clearRect(
-          0,
-          0,
-          maskCanvasRef.current.width,
-          maskCanvasRef.current.height
-        );
-        const s = maskScaleRef.current;
-        mctx.scale(s, s);
-      }
 
       if (!prefersReducedMotion && !document.hidden) {
         for (const p of paths) {
@@ -592,47 +553,6 @@ export default function NeonMazeBackground({
 
           ctx.restore();
 
-          // Update mask for true backdrop blur over lines
-          if (mctx) {
-            mctx.save();
-            mctx.lineCap = "round";
-            mctx.lineJoin = "round";
-            // Wider mask footprint for stronger blur coverage
-            mctx.lineWidth = Math.max(22, width * 10);
-            mctx.strokeStyle = "rgba(255,255,255,0.95)";
-
-            if (start < 0) {
-              strokePolylinePortion(
-                mctx,
-                p.points,
-                p.segLens,
-                p.totalLen + start,
-                p.totalLen
-              );
-              strokePolylinePortion(mctx, p.points, p.segLens, 0, end);
-            } else {
-              strokePolylinePortion(mctx, p.points, p.segLens, start, end);
-            }
-            mctx.restore();
-          }
-        }
-
-        // Throttle applying mask image to the overlay element (lower rate)
-        const now = performance.now();
-        if (
-          blurOverlayRef.current &&
-          maskCanvasRef.current &&
-          now - lastMaskUpdateRef.current > 120
-        ) {
-          const url = maskCanvasRef.current.toDataURL("image/png");
-          const el = blurOverlayRef.current;
-          el.style.webkitMaskImage = `url(${url})`;
-          (el.style as any).maskImage = `url(${url})`;
-          el.style.webkitMaskSize = "100% 100%";
-          (el.style as any).maskSize = "100% 100%";
-          el.style.webkitMaskRepeat = "no-repeat";
-          (el.style as any).maskRepeat = "no-repeat";
-          lastMaskUpdateRef.current = now;
         }
       }
 
@@ -657,16 +577,7 @@ export default function NeonMazeBackground({
     >
       <canvas ref={baseRef} className="absolute inset-0 h-full w-full" />
       <canvas ref={animRef} className="absolute inset-0 h-full w-full" />
-      {/* Backdrop blur overlay that only blurs where mask is drawn */}
-      <div
-        ref={blurOverlayRef}
-        className="absolute inset-0"
-        style={{
-          backdropFilter: "blur(10px)",
-          WebkitBackdropFilter: "blur(10px)",
-          // mask is applied dynamically each frame from maskCanvas
-        }}
-      />
+      {/* Blur overlay removed */}
     </div>
   );
 }
