@@ -47,6 +47,8 @@ export default function NeonMazeBackground({
   const blurOverlayRef = useRef<HTMLDivElement | null>(null);
   const maskCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const lastMaskUpdateRef = useRef<number>(0);
+  const maskScaleRef = useRef<number>(0.5);
+  const maskUrlRef = useRef<string | null>(null);
 
   // Creative, spaced orthogonal paths in separated regions (no collisions)
   function buildFixedPaths(
@@ -463,8 +465,9 @@ export default function NeonMazeBackground({
       if (!maskCanvasRef.current) {
         maskCanvasRef.current = document.createElement("canvas");
       }
-      const mw = base.clientWidth;
-      const mh = base.clientHeight;
+      const scale = maskScaleRef.current; // render mask at half-res for speed
+      const mw = Math.max(1, Math.floor(base.clientWidth * scale));
+      const mh = Math.max(1, Math.floor(base.clientHeight * scale));
       if (
         maskCanvasRef.current.width !== mw ||
         maskCanvasRef.current.height !== mh
@@ -505,7 +508,9 @@ export default function NeonMazeBackground({
         // keep a subtle frost even as fading
         const blurPx = 8 + 6 * fade; // 14px at top → 8px at bottom of first screen
         blurOverlayRef.current.style.backdropFilter = `blur(${blurPx}px)`;
-        (blurOverlayRef.current.style as any).WebkitBackdropFilter = `blur(${blurPx}px)`;
+        (
+          blurOverlayRef.current.style as any
+        ).WebkitBackdropFilter = `blur(${blurPx}px)`;
         blurOverlayRef.current.style.opacity = String(fade);
       }
     };
@@ -522,12 +527,15 @@ export default function NeonMazeBackground({
 
       ctx.clearRect(0, 0, anim.width, anim.height);
       if (mctx && maskCanvasRef.current) {
+        mctx.setTransform(1, 0, 0, 1, 0, 0);
         mctx.clearRect(
           0,
           0,
           maskCanvasRef.current.width,
           maskCanvasRef.current.height
         );
+        const s = maskScaleRef.current;
+        mctx.scale(s, s);
       }
 
       if (!prefersReducedMotion && !document.hidden) {
@@ -606,7 +614,7 @@ export default function NeonMazeBackground({
             mctx.save();
             mctx.lineCap = "round";
             mctx.lineJoin = "round";
-            mctx.lineWidth = Math.max(10, width * 6);
+            mctx.lineWidth = Math.max(8, width * 4);
             mctx.strokeStyle = "rgba(255,255,255,1)";
 
             if (start < 0) {
@@ -625,12 +633,12 @@ export default function NeonMazeBackground({
           }
         }
 
-        // Throttle applying mask image to the overlay element
+        // Throttle applying mask image to the overlay element (lower rate)
         const now = performance.now();
         if (
           blurOverlayRef.current &&
           maskCanvasRef.current &&
-          now - lastMaskUpdateRef.current > 80
+          now - lastMaskUpdateRef.current > 120
         ) {
           const url = maskCanvasRef.current.toDataURL("image/png");
           const el = blurOverlayRef.current;
