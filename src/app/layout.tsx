@@ -28,7 +28,7 @@ export const metadata: Metadata = {
       { url: "/favicon.png", sizes: "16x16", type: "image/png" },
     ],
     shortcut: "/favicon.ico",
-    apple: "/favicon.png",
+    apple: "/apple-touch-icon.png",
   },
   openGraph: {
     title: "Bassam Assaf - Developer & Creator",
