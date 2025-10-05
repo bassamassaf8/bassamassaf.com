@@ -100,6 +100,7 @@ export default function Home() {
             className={`text-5xl sm:text-6xl md:text-7xl font-light mb-10 tracking-wide transition-colors duration-500 ${
               isDarkMode ? "text-white" : "text-gray-900"
             }`}
+            id="hero-name"
           >
             bassam assaf
           </h1>
@@ -112,7 +113,7 @@ export default function Home() {
           </p>
           <div
             className={`flex items-center justify-center gap-6 sm:gap-8 text-sm sm:text-base transition-colors duration-300 ${
-              isDarkMode ? "text-[#b3d9ff]" : "text-blue-700"
+              isDarkMode ? "text-[#b3d9ff]" : "text-blue-800"
             }`}
           >
             <a

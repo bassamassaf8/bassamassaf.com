@@ -44,32 +44,95 @@ export default function NeonMazeBackground({
   const pathsRef = useRef<Path[]>([]);
   const staticSegmentsRef = useRef<{ a: Point; b: Point }[]>([]);
   const lastSizeRef = useRef<{ w: number; h: number }>({ w: 0, h: 0 });
+  const blurOverlayRef = useRef<HTMLDivElement | null>(null);
+  const maskCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const lastMaskUpdateRef = useRef<number>(0);
 
   // Creative, spaced orthogonal paths in separated regions (no collisions)
-  function buildFixedPaths(w: number, h: number): Path[] {
+  function buildFixedPaths(
+    w: number,
+    h: number,
+    heroRect?: DOMRect | null
+  ): Path[] {
     const margin = Math.max(32, Math.min(w, h) * 0.05);
     const regions: { x1: number; y1: number; x2: number; y2: number }[] = [
-      { x1: margin, y1: margin, x2: w * 0.44, y2: h * 0.3 }, // top-left
-      { x1: w * 0.56, y1: h * 0.22, x2: w - margin, y2: h * 0.58 }, // upper-right
-      { x1: margin, y1: h * 0.62, x2: w * 0.48, y2: h - margin }, // bottom-left
-      { x1: w * 0.52, y1: h * 0.66, x2: w - margin, y2: h - margin }, // bottom-right (new 4th line)
+      { x1: margin, y1: margin, x2: w * 0.4, y2: h * 0.28 }, // top-left
+      { x1: w * 0.6, y1: h * 0.18, x2: w - margin, y2: h * 0.56 }, // upper-right
+      { x1: margin, y1: h * 0.6, x2: w * 0.46, y2: h - margin }, // bottom-left
+      { x1: w * 0.54, y1: h * 0.64, x2: w - margin, y2: h - margin }, // bottom-right
+      { x1: w * 0.2, y1: h * 0.34, x2: w * 0.8, y2: h * 0.5 }, // mid-span band
     ];
 
     // Force color mixing per side: left (idx 0,2) => [pink, blue], right (idx 1,3) => [blue, pink]
     const regionColors = [
-      neonColors[1], // idx 0 -> pink (left)
-      neonColors[0], // idx 1 -> blue (right)
-      neonColors[0], // idx 2 -> blue (left)
-      neonColors[1], // idx 3 -> pink (right)
+      neonColors[1], // 0 pink (left)
+      neonColors[0], // 1 blue (right)
+      neonColors[0], // 2 blue (left)
+      neonColors[1], // 3 pink (right)
+      neonColors[1], // 4 pink (mid)
     ];
 
     const paths: Path[] = [];
+
+    // Optional anchored path under the hero name as the 1st path
+    if (heroRect) {
+      const step = Math.max(12, Math.min(w, h) / 42);
+      const snap = (v: number, st: number) => Math.round(v / st) * st;
+      const underlineY = snap(heroRect.bottom + 16, step);
+      const startX = snap(Math.max(margin, heroRect.left) + 2, step);
+      const endX = snap(Math.min(w - margin, heroRect.right) - 2, step);
+
+      const points: Point[] = [];
+      points.push({ x: startX, y: underlineY });
+      points.push({ x: endX, y: underlineY }); // underline segment
+
+      // drop down first so it doesn't hover near the top bar
+      let x = endX;
+      let y = snap(underlineY + step * 6, step);
+      points.push({ x, y });
+
+      // Continue serpentine primarily downward without bouncing back up
+      const segments = 36; // TUNABLE: underline path complexity/length
+      let goRight = Math.random() < 0.5;
+      for (let s = 0; s < segments; s++) {
+        x = goRight
+          ? snap(w - margin - step * 0.5, step)
+          : snap(margin + step * 0.5, step);
+        points.push({ x, y });
+        const downStride = 1.5 + Math.random() * 2.0;
+        y = snap(
+          Math.min(h - margin - step * 0.5, y + step * downStride),
+          step
+        );
+        points.push({ x, y });
+        goRight = !goRight;
+      }
+
+      let total = 0;
+      const segLens: number[] = [0];
+      for (let i = 1; i < points.length; i++) {
+        const dx = points[i].x - points[i - 1].x;
+        const dy = points[i].y - points[i - 1].y;
+        total += Math.hypot(dx, dy);
+        segLens.push(total);
+      }
+
+      paths.push({
+        points,
+        segLens,
+        totalLen: total,
+        speed: 62, // TUNABLE: underline speed (faster)
+        head: Math.min(180, total), // start ahead so it's visible immediately
+        color: neonColors[1], // pink underline by default
+        phase: Math.random() * Math.PI * 2,
+      });
+    }
 
     regions.forEach((r, idx) => {
       const snap = (v: number, step: number) => Math.round(v / step) * step;
       // TUNABLE: decrease step for tighter, more frequent turns; increase for smoother, fewer turns
       // Smaller step + more segments = longer paths with more bends
-      const step = Math.max(20, Math.min(r.x2 - r.x1, r.y2 - r.y1) / 12);
+      const step = Math.max(10, Math.min(r.x2 - r.x1, r.y2 - r.y1) / 22);
 
       const points: Point[] = [];
       let x = snap(r.x1 + step * 0.5, step);
@@ -77,7 +140,7 @@ export default function NeonMazeBackground({
       points.push({ x, y });
 
       // TUNABLE: increase segments to turn more often and lengthen the route
-      const segments = 14;
+      const segments = 32;
       let horizRight = idx % 2 === 0;
       let vertDown = idx % 2 !== 0;
 
@@ -107,7 +170,7 @@ export default function NeonMazeBackground({
         segLens,
         totalLen: total,
         // TUNABLE: increase speed for faster movement (pixels per second)
-        speed: 22 + idx * 3,
+        speed: 38 + idx * 4.5,
         head: Math.random() * total,
         // Use forced region color to guarantee one blue & one pink on each side
         color: regionColors[idx % regionColors.length],
@@ -250,12 +313,13 @@ export default function NeonMazeBackground({
       }
     }
 
-    // add 4 long walks for neon pulses spanning across
+    // add 5 long walks for neon pulses spanning across (6 total incl. underline)
     const starts: [number, number][] = [
       [0, 0],
       [gc - 1, Math.floor(gr / 2)],
       [Math.floor(gc / 2), gr - 1],
       [gc - 1, 0],
+      [Math.floor(gc / 3), Math.floor(gr * 0.25)],
     ];
     starts.forEach((s, idx) => {
       // longer walks for longer visible lines
@@ -274,8 +338,8 @@ export default function NeonMazeBackground({
         points: walk,
         segLens,
         totalLen: total,
-        // slightly faster to feel more alive
-        speed: rnd(10, 18),
+        // brighter & faster pulses on maze walks
+        speed: rnd(20, 32),
         head: Math.random() * total,
         color: neonColors[idx % neonColors.length],
         phase: Math.random() * Math.PI * 2,
@@ -369,6 +433,19 @@ export default function NeonMazeBackground({
       fitCanvas(base);
       fitCanvas(anim);
 
+      if (!maskCanvasRef.current) {
+        maskCanvasRef.current = document.createElement("canvas");
+      }
+      const mw = base.clientWidth;
+      const mh = base.clientHeight;
+      if (
+        maskCanvasRef.current.width !== mw ||
+        maskCanvasRef.current.height !== mh
+      ) {
+        maskCanvasRef.current.width = mw;
+        maskCanvasRef.current.height = mh;
+      }
+
       const baseCtx = base.getContext("2d")!;
       const animCtx = anim.getContext("2d")!;
       baseCtx.clearRect(0, 0, base.width, base.height);
@@ -381,7 +458,9 @@ export default function NeonMazeBackground({
       const widthChanged = Math.abs(w - last.w) > 24;
       const heightChanged = Math.abs(h - last.h) > 160; // ignore small URL-bar jitters
       if (!pathsRef.current.length || widthChanged || heightChanged) {
-        pathsRef.current = buildFixedPaths(w, h);
+        const hero = document.getElementById("hero-name");
+        const rect = hero ? hero.getBoundingClientRect() : null;
+        pathsRef.current = buildFixedPaths(w, h, rect);
         lastSizeRef.current = { w, h };
       }
       drawStaticNetwork(baseCtx, pathsRef.current);
@@ -394,30 +473,76 @@ export default function NeonMazeBackground({
 
     const loop = (t: number) => {
       const ctx = anim.getContext("2d")!;
+      const mctx = maskCanvasRef.current?.getContext("2d") || null;
       const paths = pathsRef.current;
       const dt = Math.min(0.05, (t - last) / 1000);
       last = t;
 
       ctx.clearRect(0, 0, anim.width, anim.height);
+      if (mctx && maskCanvasRef.current) {
+        mctx.clearRect(
+          0,
+          0,
+          maskCanvasRef.current.width,
+          maskCanvasRef.current.height
+        );
+      }
 
       if (!prefersReducedMotion && !document.hidden) {
         for (const p of paths) {
           p.head = (p.head + p.speed * dt) % p.totalLen;
           // TUNABLE: tailLen controls the visible length of each neon pulse
-          const tailLen = 160; // longer visible neon segment
+          const tailLen = 340; // longer visible neon segment
           const start = p.head - tailLen;
           const end = p.head;
 
           const beat = 0.45 + 0.25 * Math.max(0, Math.sin(t / 700 + p.phase));
           const width = 1.0 + 0.6 * beat;
 
+          // Frosted/glow effect: draw blurred passes behind, then crisp core
+          // TUNABLE: adjust blur and alpha to increase/decrease frosted look
+          const frostedPasses = [
+            { blur: 0, alpha: 0.0 },
+            { blur: 0, alpha: 0.0 },
+          ];
+
+          for (const pass of frostedPasses) {
+            ctx.save();
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            ctx.lineWidth = width * 1.5;
+            ctx.filter = `blur(${pass.blur}px)`;
+            ctx.globalAlpha = pass.alpha;
+            ctx.strokeStyle = p.color;
+            ctx.shadowColor = p.color;
+            ctx.shadowBlur = 0;
+
+            if (start < 0) {
+              strokePolylinePortion(
+                ctx,
+                p.points,
+                p.segLens,
+                p.totalLen + start,
+                p.totalLen
+              );
+              strokePolylinePortion(ctx, p.points, p.segLens, 0, end);
+            } else {
+              strokePolylinePortion(ctx, p.points, p.segLens, start, end);
+            }
+            ctx.restore();
+          }
+
+          // Core neon stroke
           ctx.save();
           ctx.lineCap = "round";
           ctx.lineJoin = "round";
           ctx.lineWidth = width;
+          ctx.filter = "none";
+          ctx.globalAlpha = 1;
           ctx.shadowColor = p.color;
-          ctx.shadowBlur = 8 + 10 * beat; // soft heartbeat glow
-          ctx.strokeStyle = p.color.replace(", 1)", `, ${0.55 + 0.2 * beat})`);
+          ctx.shadowBlur = 14 + 16 * beat;
+          // brighten core opacity
+          ctx.strokeStyle = p.color.replace(", 1)", `, ${0.8 + 0.2 * beat})`);
 
           if (start < 0) {
             strokePolylinePortion(
@@ -433,6 +558,47 @@ export default function NeonMazeBackground({
           }
 
           ctx.restore();
+
+          // Update mask for true backdrop blur over lines
+          if (mctx) {
+            mctx.save();
+            mctx.lineCap = "round";
+            mctx.lineJoin = "round";
+            mctx.lineWidth = Math.max(10, width * 6);
+            mctx.strokeStyle = "rgba(255,255,255,1)";
+
+            if (start < 0) {
+              strokePolylinePortion(
+                mctx,
+                p.points,
+                p.segLens,
+                p.totalLen + start,
+                p.totalLen
+              );
+              strokePolylinePortion(mctx, p.points, p.segLens, 0, end);
+            } else {
+              strokePolylinePortion(mctx, p.points, p.segLens, start, end);
+            }
+            mctx.restore();
+          }
+        }
+
+        // Throttle applying mask image to the overlay element
+        const now = performance.now();
+        if (
+          blurOverlayRef.current &&
+          maskCanvasRef.current &&
+          now - lastMaskUpdateRef.current > 80
+        ) {
+          const url = maskCanvasRef.current.toDataURL("image/png");
+          const el = blurOverlayRef.current;
+          el.style.webkitMaskImage = `url(${url})`;
+          (el.style as any).maskImage = `url(${url})`;
+          el.style.webkitMaskSize = "100% 100%";
+          (el.style as any).maskSize = "100% 100%";
+          el.style.webkitMaskRepeat = "no-repeat";
+          (el.style as any).maskRepeat = "no-repeat";
+          lastMaskUpdateRef.current = now;
         }
       }
 
@@ -456,6 +622,16 @@ export default function NeonMazeBackground({
     >
       <canvas ref={baseRef} className="absolute inset-0 h-full w-full" />
       <canvas ref={animRef} className="absolute inset-0 h-full w-full" />
+      {/* Backdrop blur overlay that only blurs where mask is drawn */}
+      <div
+        ref={blurOverlayRef}
+        className="absolute inset-0"
+        style={{
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          // mask is applied dynamically each frame from maskCanvas
+        }}
+      />
     </div>
   );
 }
