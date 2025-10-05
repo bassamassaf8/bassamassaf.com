@@ -57,19 +57,29 @@ export default function NeonMazeBackground({
     const vpMin = Math.min(w, h);
     const scale = Math.max(0.7, Math.min(1.5, vpMin / 900));
     const gutter = Math.max(16, Math.min(w, h) * 0.02);
+    const rnd = (min: number, max: number) => Math.random() * (max - min) + min;
     // Reserve a left corridor exclusively for the underline path
     const leftCorridorX2 = margin + Math.max(160, w * 0.22);
     // Five non-overlapping horizontal bands spanning the full initial viewport
     const topBand = Math.max(margin, h * 0.06);
     const bottomBand = Math.min(h - margin, h * 0.94);
     const bandH = (bottomBand - topBand) / 5;
-    const regions: { x1: number; y1: number; x2: number; y2: number }[] =
-      Array.from({ length: 5 }, (_, i) => ({
-        x1: leftCorridorX2 + gutter,
-        y1: topBand + bandH * i,
-        x2: w - margin,
-        y2: topBand + bandH * (i + 1) - bandH * 0.12,
-      }));
+    const regions: { x1: number; y1: number; x2: number; y2: number }[] = [];
+    for (let i = 0; i < 5; i++) {
+      const y1Base = topBand + bandH * i;
+      const yJitter = w < 700 ? rnd(-bandH * 0.08, bandH * 0.06) : 0;
+      const y1 = Math.max(margin, y1Base + yJitter);
+      const y2 = Math.min(
+        h - margin,
+        y1 + bandH * (0.88 + (w < 700 ? rnd(0.02, 0.12) : 0.08))
+      );
+      const xSpan = w - margin - (leftCorridorX2 + gutter);
+      const xStartJ = w < 700 ? rnd(0, xSpan * 0.15) : 0;
+      const xEndJ = w < 700 ? rnd(0, xSpan * 0.15) : 0;
+      const x1 = leftCorridorX2 + gutter + xStartJ;
+      const x2 = w - margin - xEndJ;
+      regions.push({ x1, y1, x2, y2 });
+    }
 
     // Force color mixing per side: left (idx 0,2) => [pink, blue], right (idx 1,3) => [blue, pink]
     const regionColors = [
@@ -141,7 +151,10 @@ export default function NeonMazeBackground({
     regions.forEach((r, idx) => {
       const snap = (v: number, step: number) => Math.round(v / step) * step;
       // TUNABLE (responsive): step and segment count scale with viewport
-      const step = Math.max(8 * scale, Math.min(r.x2 - r.x1, r.y2 - r.y1) / (22 / scale));
+      const step = Math.max(
+        8 * scale,
+        Math.min(r.x2 - r.x1, r.y2 - r.y1) / (22 / scale)
+      );
 
       const points: Point[] = [];
       let x = snap(r.x1 + step * 0.5, step);
@@ -154,12 +167,12 @@ export default function NeonMazeBackground({
       let vertDown = idx % 2 !== 0;
 
       for (let s = 0; s < segments; s++) {
-        x = horizRight
-          ? snap(r.x2 - step * 0.5, step)
-          : snap(r.x1 + step * 0.5, step);
+        const rx = horizRight ? rnd(0.55, 0.9) : rnd(0.1, 0.45);
+        x = snap(r.x1 + rx * (r.x2 - r.x1), step);
         points.push({ x, y });
-        const boundTarget = vertDown ? r.y2 - step * 0.5 : r.y1 + step * 0.5;
-        y = snap(boundTarget, step);
+        const ry = vertDown ? rnd(0.55, 0.9) : rnd(0.1, 0.45);
+        const vy = r.y1 + ry * (r.y2 - r.y1);
+        y = snap(Math.max(r.y1 + step * 0.5, Math.min(vy, r.y2 - step * 0.5)), step);
         points.push({ x, y });
         horizRight = !horizRight;
         vertDown = !vertDown;
@@ -490,7 +503,10 @@ export default function NeonMazeBackground({
         for (const p of paths) {
           p.head = (p.head + p.speed * dt) % p.totalLen;
           // TUNABLE (responsive): tailLen controls the visible length of each neon pulse
-          const tailLen = Math.max(180, Math.min(520, 340 * (0.9 + 0.6 * (scale - 1))));
+          const tailLen = Math.max(
+            180,
+            Math.min(520, 340 * (0.9 + 0.6 * (scale - 1)))
+          );
           const start = p.head - tailLen;
           const end = p.head;
 
