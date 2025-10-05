@@ -58,13 +58,38 @@ export default function NeonMazeBackground({
     const gutter = Math.max(16, Math.min(w, h) * 0.02);
     // Reserve a left corridor exclusively for the underline path
     const leftCorridorX2 = margin + Math.max(160, w * 0.22);
-    // Five non-overlapping horizontal bands for the other lines (right side only)
+    // Five non-overlapping horizontal bands kept near the top so they follow while scrolling
     const regions: { x1: number; y1: number; x2: number; y2: number }[] = [
-      { x1: leftCorridorX2 + gutter, y1: h * 0.12, x2: w - margin, y2: h * 0.20 },
-      { x1: leftCorridorX2 + gutter, y1: h * 0.28, x2: w - margin, y2: h * 0.36 },
-      { x1: leftCorridorX2 + gutter, y1: h * 0.44, x2: w - margin, y2: h * 0.52 },
-      { x1: leftCorridorX2 + gutter, y1: h * 0.60, x2: w - margin, y2: h * 0.68 },
-      { x1: leftCorridorX2 + gutter, y1: h * 0.76, x2: w - margin, y2: h - margin },
+      {
+        x1: leftCorridorX2 + gutter,
+        y1: h * 0.12,
+        x2: w - margin,
+        y2: h * 0.2,
+      },
+      {
+        x1: leftCorridorX2 + gutter,
+        y1: h * 0.22,
+        x2: w - margin,
+        y2: h * 0.3,
+      },
+      {
+        x1: leftCorridorX2 + gutter,
+        y1: h * 0.30,
+        x2: w - margin,
+        y2: h * 0.38,
+      },
+      {
+        x1: leftCorridorX2 + gutter,
+        y1: h * 0.38,
+        x2: w - margin,
+        y2: h * 0.46,
+      },
+      {
+        x1: leftCorridorX2 + gutter,
+        y1: h * 0.46,
+        x2: w - margin,
+        y2: h * 0.54,
+      },
     ];
 
     // Force color mixing per side: left (idx 0,2) => [pink, blue], right (idx 1,3) => [blue, pink]
@@ -90,9 +115,9 @@ export default function NeonMazeBackground({
       points.push({ x: startX, y: underlineY });
       points.push({ x: endX, y: underlineY }); // underline segment
 
-      // drop down first so it doesn't hover near the top bar
+      // drop down first, but keep underline within the top corridor
       let x = endX;
-      let y = snap(underlineY + step * 6, step);
+      let y = snap(Math.min(h * 0.20, underlineY + step * 3), step);
       points.push({ x, y });
 
       // Continue serpentine primarily downward within the reserved left corridor
@@ -103,11 +128,8 @@ export default function NeonMazeBackground({
           ? snap(leftCorridorX2 - step * 0.5, step)
           : snap(margin + step * 0.5, step);
         points.push({ x, y });
-        const downStride = 1.5 + Math.random() * 2.0;
-        y = snap(
-          Math.min(h - margin - step * 0.5, y + step * downStride),
-          step
-        );
+        const downStride = 0.8 + Math.random() * 0.8; // small movement to keep near top
+        y = snap(Math.min(h * 0.22, y + step * downStride), step);
         points.push({ x, y });
         goRight = !goRight;
       }
