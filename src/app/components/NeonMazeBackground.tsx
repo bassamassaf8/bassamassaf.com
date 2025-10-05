@@ -34,8 +34,8 @@ export default function NeonMazeBackground({
   const neonColors = useMemo(
     () => [
       "rgba(0, 170, 255, 1)", // electric blue
-    //   "rgba(0, 200, 255, 1)", // cyan
-   //   "rgba(90, 120, 255, 1)", // bluish purple
+      //   "rgba(0, 200, 255, 1)", // cyan
+      //   "rgba(90, 120, 255, 1)", // bluish purple
       "rgba(255, 60, 200, 1)", // neon pink
     ],
     []
@@ -43,28 +43,31 @@ export default function NeonMazeBackground({
 
   const pathsRef = useRef<Path[]>([]);
   const staticSegmentsRef = useRef<{ a: Point; b: Point }[]>([]);
+  const lastSizeRef = useRef<{ w: number; h: number }>({ w: 0, h: 0 });
 
   // Creative, spaced orthogonal paths in separated regions (no collisions)
   function buildFixedPaths(w: number, h: number): Path[] {
     const margin = Math.max(32, Math.min(w, h) * 0.05);
     const regions: { x1: number; y1: number; x2: number; y2: number }[] = [
-      { x1: margin, y1: margin, x2: w * 0.44, y2: h * 0.34 },
-      { x1: w * 0.56, y1: h * 0.28, x2: w - margin, y2: h * 0.64 },
-      { x1: margin, y1: h * 0.66, x2: w * 0.5, y2: h - margin },
+      { x1: margin, y1: margin, x2: w * 0.44, y2: h * 0.30 }, // top-left
+      { x1: w * 0.56, y1: h * 0.22, x2: w - margin, y2: h * 0.58 }, // upper-right
+      { x1: margin, y1: h * 0.62, x2: w * 0.48, y2: h - margin }, // bottom-left
+      { x1: w * 0.52, y1: h * 0.66, x2: w - margin, y2: h - margin }, // bottom-right (new 4th line)
     ];
 
     const paths: Path[] = [];
 
     regions.forEach((r, idx) => {
       const snap = (v: number, step: number) => Math.round(v / step) * step;
-      const step = Math.max(32, Math.min(r.x2 - r.x1, r.y2 - r.y1) / 6);
+      // smaller step and more segments -> longer serpentine lines
+      const step = Math.max(24, Math.min(r.x2 - r.x1, r.y2 - r.y1) / 10);
 
       const points: Point[] = [];
       let x = snap(r.x1 + step * 0.5, step);
       let y = snap((r.y1 + r.y2) / 2, step);
       points.push({ x, y });
 
-      const segments = 6;
+      const segments = 10;
       let horizRight = idx % 2 === 0;
       let vertDown = idx % 2 !== 0;
 
@@ -93,7 +96,8 @@ export default function NeonMazeBackground({
         points,
         segLens,
         totalLen: total,
-        speed: 9 + idx * 1.5,
+        // faster speeds for more lively motion
+        speed: 16 + idx * 2.5,
         head: Math.random() * total,
         color: neonColors[idx % neonColors.length],
         phase: Math.random() * Math.PI * 2,
@@ -361,8 +365,14 @@ export default function NeonMazeBackground({
 
       const w = base.clientWidth;
       const h = base.clientHeight;
-      // Use fixed, deterministic spanning paths across the whole screen
-      pathsRef.current = buildFixedPaths(w, h);
+      // Regenerate only on significant size changes to avoid mobile scroll re-randomizing
+      const last = lastSizeRef.current;
+      const widthChanged = Math.abs(w - last.w) > 24;
+      const heightChanged = Math.abs(h - last.h) > 160; // ignore small URL-bar jitters
+      if (!pathsRef.current.length || widthChanged || heightChanged) {
+        pathsRef.current = buildFixedPaths(w, h);
+        lastSizeRef.current = { w, h };
+      }
       drawStaticNetwork(baseCtx, pathsRef.current);
     };
 
@@ -382,7 +392,7 @@ export default function NeonMazeBackground({
       if (!prefersReducedMotion && !document.hidden) {
         for (const p of paths) {
           p.head = (p.head + p.speed * dt) % p.totalLen;
-          const tailLen = 40; // smaller neon segment
+          const tailLen = 120; // longer visible neon segment
           const start = p.head - tailLen;
           const end = p.head;
 
