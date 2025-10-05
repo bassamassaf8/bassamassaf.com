@@ -60,72 +60,82 @@ export default function NeonMazeBackground({
     const gutter = Math.max(16, Math.min(w, h) * 0.02);
     const rnd = (min: number, max: number) => Math.random() * (max - min) + min;
     // Define regions for 4 paths starting at corners with inward depth
-    const regions: { x1: number; y1: number; x2: number; y2: number; start: Point; fromLeft: boolean; fromTop: boolean }[] = [
-      { x1: margin, y1: margin, x2: w - margin, y2: h - margin, start: { x: margin, y: margin }, fromLeft: true, fromTop: true },
-      { x1: margin, y1: margin, x2: w - margin, y2: h - margin, start: { x: w - margin, y: margin }, fromLeft: false, fromTop: true },
-      { x1: margin, y1: margin, x2: w - margin, y2: h - margin, start: { x: w - margin, y: h - margin }, fromLeft: false, fromTop: false },
-      { x1: margin, y1: margin, x2: w - margin, y2: h - margin, start: { x: margin, y: h - margin }, fromLeft: true, fromTop: false },
+    const regions: {
+      x1: number;
+      y1: number;
+      x2: number;
+      y2: number;
+      start: Point;
+      fromLeft: boolean;
+      fromTop: boolean;
+    }[] = [
+      {
+        x1: margin,
+        y1: margin,
+        x2: w - margin,
+        y2: h - margin,
+        start: { x: margin, y: margin },
+        fromLeft: true,
+        fromTop: true,
+      },
+      {
+        x1: margin,
+        y1: margin,
+        x2: w - margin,
+        y2: h - margin,
+        start: { x: w - margin, y: margin },
+        fromLeft: false,
+        fromTop: true,
+      },
+      {
+        x1: margin,
+        y1: margin,
+        x2: w - margin,
+        y2: h - margin,
+        start: { x: w - margin, y: h - margin },
+        fromLeft: false,
+        fromTop: false,
+      },
+      {
+        x1: margin,
+        y1: margin,
+        x2: w - margin,
+        y2: h - margin,
+        start: { x: margin, y: h - margin },
+        fromLeft: true,
+        fromTop: false,
+      },
     ];
 
     // Alternate colors
-    const regionColors = [neonColors[0], neonColors[1], neonColors[0], neonColors[1]];
+    const regionColors = [
+      neonColors[0],
+      neonColors[1],
+      neonColors[0],
+      neonColors[1],
+    ];
 
     const paths: Path[] = [];
 
-    // Underline disabled for 4-line mode
-    if (false && heroRect) {
+    // One-shot sweep line across the name
+    if (heroRect) {
       // TUNABLE (responsive): smaller screens use finer steps; larger screens coarser
       const step = Math.max(10 * scale, Math.min(w, h) / (42 / scale));
       const snap = (v: number, st: number) => Math.round(v / st) * st;
-      const underlineY = snap(heroRect.bottom + 16, step);
-      const startX = snap(Math.max(margin, heroRect.left) + 2, step);
-      const endX = snap(Math.min(leftCorridorX2 - 4, heroRect.right) - 2, step);
-
-      const points: Point[] = [];
-      points.push({ x: startX, y: underlineY });
-      points.push({ x: endX, y: underlineY }); // underline segment
-
-      // drop down first, then allow underline to travel the full initial screen
-      let x = endX;
-      let y = snap(Math.min(h * 0.3, underlineY + step * 4), step);
-      points.push({ x, y });
-
-      // Continue serpentine primarily downward within the reserved left corridor
-      const segments = Math.max(18, Math.round(36 * scale)); // TUNABLE: underline path complexity/length
-      let goRight = Math.random() < 0.5;
-      for (let s = 0; s < segments; s++) {
-        x = goRight
-          ? snap(leftCorridorX2 - step * 0.5, step)
-          : snap(margin + step * 0.5, step);
-        points.push({ x, y });
-        const downStride = 1.2 + Math.random() * 2.0;
-        y = snap(
-          Math.min(h - margin - step * 0.5, y + step * downStride),
-          step
-        );
-        points.push({ x, y });
-        goRight = !goRight;
-      }
-
-      let total = 0;
-      const segLens: number[] = [0];
-      for (let i = 1; i < points.length; i++) {
-        const dx = points[i].x - points[i - 1].x;
-        const dy = points[i].y - points[i - 1].y;
-        total += Math.hypot(dx, dy);
-        segLens.push(total);
-      }
-
-      paths.push({
-        points,
+      const sweepY = snap(heroRect.top + heroRect.height * 0.5, step);
+      const p0 = { x: margin, y: sweepY };
+      const p1 = { x: w - margin, y: sweepY };
+      const total = Math.hypot(p1.x - p0.x, p1.y - p0.y);
+      const segLens = [0, total];
+      oneShotRef.current = {
+        points: [p0, p1],
         segLens,
         totalLen: total,
-        // TUNABLE (responsive): speed scales mildly with viewport size
-        speed: 62 * (0.9 + 0.5 * (scale - 1)),
-        head: Math.min(180, total), // start ahead so it's visible immediately
-        color: neonColors[1], // pink underline by default
-        phase: Math.random() * Math.PI * 2,
-      });
+        speed: Math.max(240, w * 0.6),
+        head: 0,
+        color: neonColors[0],
+        phase: 0,
+      };
     }
 
     regions.forEach((r, idx) => {
