@@ -58,27 +58,20 @@ export default function NeonMazeBackground({
     const scale = Math.max(0.7, Math.min(1.5, vpMin / 900));
     const gutter = Math.max(16, Math.min(w, h) * 0.02);
     const rnd = (min: number, max: number) => Math.random() * (max - min) + min;
-    // Reserve a left corridor exclusively for the underline path
-    const leftCorridorX2 = margin + Math.max(160, w * 0.22);
-    // Five non-overlapping horizontal bands spanning the full initial viewport
+    // Allow collisions: create 4 paths all sharing the same spanning region
     const topBand = Math.max(margin, h * 0.06);
     const bottomBand = Math.min(h - margin, h * 0.94);
-    const bandH = (bottomBand - topBand) / 5;
     const regions: { x1: number; y1: number; x2: number; y2: number }[] = [];
-    for (let i = 0; i < 5; i++) {
-      const y1Base = topBand + bandH * i;
-      const yJitter = w < 700 ? rnd(-bandH * 0.08, bandH * 0.06) : 0;
-      const y1 = Math.max(margin, y1Base + yJitter);
-      const y2 = Math.min(
-        h - margin,
-        y1 + bandH * (0.88 + (w < 700 ? rnd(0.02, 0.12) : 0.08))
-      );
-      const xSpan = w - margin - (leftCorridorX2 + gutter);
-      const xStartJ = w < 700 ? rnd(0, xSpan * 0.15) : 0;
-      const xEndJ = w < 700 ? rnd(0, xSpan * 0.15) : 0;
-      const x1 = leftCorridorX2 + gutter + xStartJ;
-      const x2 = w - margin - xEndJ;
-      regions.push({ x1, y1, x2, y2 });
+    for (let i = 0; i < 4; i++) {
+      // Small per-line jitter so they don't start at exactly same coordinates
+      const xJ = rnd(0, Math.min(48, (w - 2 * margin) * 0.05));
+      const yJ = rnd(0, Math.min(48, (bottomBand - topBand) * 0.05));
+      regions.push({
+        x1: margin + xJ,
+        y1: topBand + yJ,
+        x2: w - margin - xJ,
+        y2: bottomBand - yJ,
+      });
     }
 
     // Force color mixing per side: left (idx 0,2) => [pink, blue], right (idx 1,3) => [blue, pink]
@@ -92,8 +85,8 @@ export default function NeonMazeBackground({
 
     const paths: Path[] = [];
 
-    // Optional anchored path under the hero name as the 1st path
-    if (heroRect) {
+    // Underline disabled for 4-line mode
+    if (false && heroRect) {
       // TUNABLE (responsive): smaller screens use finer steps; larger screens coarser
       const step = Math.max(10 * scale, Math.min(w, h) / (42 / scale));
       const snap = (v: number, st: number) => Math.round(v / st) * st;
@@ -158,24 +151,19 @@ export default function NeonMazeBackground({
 
       const points: Point[] = [];
       let x = snap(r.x1 + step * 0.5, step);
-      let y = snap((r.y1 + r.y2) / 2, step);
+      let y = snap(r.y1 + step * 0.5, step);
       points.push({ x, y });
 
       // TUNABLE (responsive): more segments on larger screens
       const segments = Math.max(18, Math.round(32 * scale));
-      let horizRight = idx % 2 === 0;
-      let vertDown = idx % 2 !== 0;
+      let horizRight = Math.random() < 0.5;
+      let vertDown = Math.random() < 0.5;
 
       for (let s = 0; s < segments; s++) {
-        const rx = horizRight ? rnd(0.55, 0.9) : rnd(0.1, 0.45);
-        x = snap(r.x1 + rx * (r.x2 - r.x1), step);
+        x = horizRight ? snap(r.x2 - step * 0.5, step) : snap(r.x1 + step * 0.5, step);
         points.push({ x, y });
-        const ry = vertDown ? rnd(0.55, 0.9) : rnd(0.1, 0.45);
-        const vy = r.y1 + ry * (r.y2 - r.y1);
-        y = snap(
-          Math.max(r.y1 + step * 0.5, Math.min(vy, r.y2 - step * 0.5)),
-          step
-        );
+        const boundTarget = vertDown ? r.y2 - step * 0.5 : r.y1 + step * 0.5;
+        y = snap(boundTarget, step);
         points.push({ x, y });
         horizRight = !horizRight;
         vertDown = !vertDown;
@@ -508,7 +496,10 @@ export default function NeonMazeBackground({
         for (const p of paths) {
           p.head = (p.head + p.speed * dt) % p.totalLen;
           // TUNABLE (responsive): tailLen controls the visible length of each neon pulse
-          const tailLen = Math.max(180, Math.min(520, 340 * (0.9 + 0.6 * (scaleView - 1))));
+          const tailLen = Math.max(
+            180,
+            Math.min(520, 340 * (0.9 + 0.6 * (scaleView - 1)))
+          );
           const start = p.head - tailLen;
           const end = p.head;
 
