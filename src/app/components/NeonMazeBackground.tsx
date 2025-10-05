@@ -172,7 +172,10 @@ export default function NeonMazeBackground({
         points.push({ x, y });
         const ry = vertDown ? rnd(0.55, 0.9) : rnd(0.1, 0.45);
         const vy = r.y1 + ry * (r.y2 - r.y1);
-        y = snap(Math.max(r.y1 + step * 0.5, Math.min(vy, r.y2 - step * 0.5)), step);
+        y = snap(
+          Math.max(r.y1 + step * 0.5, Math.min(vy, r.y2 - step * 0.5)),
+          step
+        );
         points.push({ x, y });
         horizRight = !horizRight;
         vertDown = !vertDown;
@@ -500,19 +503,18 @@ export default function NeonMazeBackground({
       ctx.clearRect(0, 0, anim.width, anim.height);
 
       if (!prefersReducedMotion && !document.hidden) {
+        const vpMin = Math.min(anim.clientWidth, anim.clientHeight);
+        const scaleView = Math.max(0.7, Math.min(1.5, vpMin / 900));
         for (const p of paths) {
           p.head = (p.head + p.speed * dt) % p.totalLen;
           // TUNABLE (responsive): tailLen controls the visible length of each neon pulse
-          const tailLen = Math.max(
-            180,
-            Math.min(520, 340 * (0.9 + 0.6 * (scale - 1)))
-          );
+          const tailLen = Math.max(180, Math.min(520, 340 * (0.9 + 0.6 * (scaleView - 1))));
           const start = p.head - tailLen;
           const end = p.head;
 
           const beat = 0.45 + 0.25 * Math.max(0, Math.sin(t / 700 + p.phase));
           // TUNABLE (responsive): stroke width scales mildly with viewport size
-          const width = (1.0 + 0.6 * beat) * (0.9 + 0.6 * (scale - 1));
+          const width = (1.0 + 0.6 * beat) * (0.9 + 0.6 * (scaleView - 1));
 
           // Frosted/glow effect: draw blurred passes behind, then crisp core
           // TUNABLE: adjust blur and alpha to increase/decrease frosted look
